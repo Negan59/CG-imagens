@@ -11,6 +11,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
@@ -117,6 +118,8 @@
                         <Font name="Comic Sans MS" size="16.0" />
                      </font>
                   </Button>
+                  <TextField fx:id="txBinarizar" prefHeight="25.0" prefWidth="67.0" visible="false" />
+                  <Button fx:id="btnBinarizar" mnemonicParsing="false" onAction="#evtBinarizarManual" text="Binarizar" visible="false" />
                   <Slider fx:id="sldTamanhoPincel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" min="1.0" prefHeight="43.0" prefWidth="170.0" style="-fx-background-color: red;" value="1.0" visible="false" />
               </items>
             </ToolBar>

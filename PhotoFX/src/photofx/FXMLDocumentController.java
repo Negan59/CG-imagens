@@ -1,4 +1,3 @@
-
 package photofx;
 
 import ij.ImagePlus;
@@ -26,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -33,19 +33,18 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 
-
 public class FXMLDocumentController implements Initializable {
-    
+
     @FXML
     private ImageView imagemView;
-    private Image image=null;
+    private Image image = null;
     private BufferedImage bImage;
     private ImagePlus imageplus;
     private boolean modified = false;
-    private int x1,x2,y1,y2;
+    private int x1, x2, y1, y2;
     private boolean canetaAtiva = false;
     private Graphics2D graph;
-    private Color corsel=Color.WHITE;
+    private Color corsel = Color.WHITE;
     private boolean tipo = false;
     private boolean pinta = false;
     private boolean quadrado = false;
@@ -90,7 +89,7 @@ public class FXMLDocumentController implements Initializable {
     private Label resultS;
     @FXML
     private Label resultI;
-    
+
     private Hsi[][] obj;
     @FXML
     private Menu tfBinario;
@@ -98,26 +97,35 @@ public class FXMLDocumentController implements Initializable {
     private BarChart<?, ?> graficoHisto;
     @FXML
     private Menu tfHistograma;
-    
+
     private int vetor[] = new int[256];
+    @FXML
+    private TextField txBinarizar;
+    @FXML
+    private Button btnBinarizar;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       graficoHisto.setVisible(false);
-    }    
+        graficoHisto.setVisible(false);
+    }
 
     @FXML
     private void evtAbrir(ActionEvent event) {
+        graficoHisto.setVisible(false);
+        if (!graficoHisto.getData().isEmpty()) {
+            graficoHisto.getData().remove(0);
+        }
+
         FileChooser filechooser = new FileChooser();
         filechooser.setInitialDirectory(new File("d:\\"));
         filechooser.getExtensionFilters().addAll(
-         new FileChooser.ExtensionFilter("JPEG Files", "*.jpg"),
-         new FileChooser.ExtensionFilter("PNG Files", "*.png"),
-         new FileChooser.ExtensionFilter("JPEG Files", "*.jpeg"),
-         new FileChooser.ExtensionFilter("GIF Files", "*.gif")
-            
+                new FileChooser.ExtensionFilter("JPEG Files", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG Files", "*.png"),
+                new FileChooser.ExtensionFilter("JPEG Files", "*.jpeg"),
+                new FileChooser.ExtensionFilter("GIF Files", "*.gif")
         );
         file = filechooser.showOpenDialog(null);
-        if(file!=null){
+        if (file != null) {
             image = new Image(file.toURI().toString());
             imagemView.setFitHeight(image.getHeight());
             imagemView.setFitWidth(image.getWidth());
@@ -138,38 +146,38 @@ public class FXMLDocumentController implements Initializable {
             btnCaneta.setDisable(false);
 //            graph = bImage.createGraphics();
         }
-        System.out.println("altura = "+image.getHeight());
-        obj = new Hsi[(int)image.getHeight()][(int)image.getWidth()];
-        bImage=SwingFXUtils.fromFXImage(image, null);
-           int pixel[] = {0,0,0,0};
-           int vetor[];
-           WritableRaster raster =bImage.getRaster();
-           for(int y=0;y<image.getHeight();y++){
-               for(int x=0;x<image.getWidth();x++){
-                   raster.getPixel(x, y, pixel);
-                    vetor = this.geraHSI(pixel[0], pixel[1], pixel[2]);
-                   obj[y][x] = new Hsi(vetor[0],vetor[1],vetor[2]);
-               }
-           }
-           image = SwingFXUtils.toFXImage(bImage, null);
-           imagemView.setImage(image);
+        System.out.println("altura = " + image.getHeight());
+        obj = new Hsi[(int) image.getHeight()][(int) image.getWidth()];
+        bImage = SwingFXUtils.fromFXImage(image, null);
+        int pixel[] = {0, 0, 0, 0};
+        int vetor[];
+        WritableRaster raster = bImage.getRaster();
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                raster.getPixel(x, y, pixel);
+                vetor = this.geraHSI(pixel[0], pixel[1], pixel[2]);
+                obj[y][x] = new Hsi(vetor[0], vetor[1], vetor[2]);
+            }
+        }
+        image = SwingFXUtils.toFXImage(bImage, null);
+        imagemView.setImage(image);
     }
 
     @FXML
     private void evtSalvar(ActionEvent event) {
-        if(modified){
-            if(file!=null){
-                try{
+        if (modified) {
+            if (file != null) {
+                try {
                     ImageIO.write(bImage, "jpg", file);
-                }catch(IOException e){
+                } catch (IOException e) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Erro:"+e.getMessage());
+                    alert.setContentText("Erro:" + e.getMessage());
                     alert.showAndWait();
                 }
             }
             modified = false;
         }
-        
+
     }
 
     @FXML
@@ -177,19 +185,18 @@ public class FXMLDocumentController implements Initializable {
         FileChooser filechooser = new FileChooser();
         filechooser.setInitialFileName(file.getName());
         filechooser.getExtensionFilters().addAll(
-         new FileChooser.ExtensionFilter("JPEG Files", "*.jpg"),
-         new FileChooser.ExtensionFilter("PNG Files", "*.png"),
-         new FileChooser.ExtensionFilter("JPEG Files", "*.jpeg"),
-         new FileChooser.ExtensionFilter("GIF Files", "*.gif")
-            
+                new FileChooser.ExtensionFilter("JPEG Files", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG Files", "*.png"),
+                new FileChooser.ExtensionFilter("JPEG Files", "*.jpeg"),
+                new FileChooser.ExtensionFilter("GIF Files", "*.gif")
         );
         file = filechooser.showSaveDialog(null);
-        if(file!=null){
-            try{
+        if (file != null) {
+            try {
                 ImageIO.write(bImage, "jpg", file);
-            }catch(IOException e){
+            } catch (IOException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Erro:"+e.getMessage());
+                alert.setContentText("Erro:" + e.getMessage());
                 alert.showAndWait();
             }
         }
@@ -198,89 +205,88 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtFechar(ActionEvent event) {
-        if(modified){
+        if (modified) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Detectamos que a imagem não foi salva");
             alert.setContentText("Salvar a imagem?");
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                if(file!=null){
-                try{
-                    ImageIO.write(bImage, "jpg", file);
-                }catch(IOException e){
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Erro:"+e.getMessage());
-                    alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                if (file != null) {
+                    try {
+                        ImageIO.write(bImage, "jpg", file);
+                    } catch (IOException e) {
+                        alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Erro:" + e.getMessage());
+                        alert.showAndWait();
+                    }
                 }
             }
-            } 
         }
-            imSalvar.setDisable(true);
-            imSalvarComo.setDisable(true);
-            imFechar.setDisable(true);
-            tfImagens.setVisible(false);
-            tfImagens.setDisable(true);
-            btnSalvarComo.setDisable(true);
-            btnSalvarComo.setVisible(false);
-            btnSalvar.setDisable(true);
-            btnSalvar.setVisible(false);
-            btnCaneta.setDisable(true);
+        imSalvar.setDisable(true);
+        imSalvarComo.setDisable(true);
+        imFechar.setDisable(true);
+        tfImagens.setVisible(false);
+        tfImagens.setDisable(true);
+        btnSalvarComo.setDisable(true);
+        btnSalvarComo.setVisible(false);
+        btnSalvar.setDisable(true);
+        btnSalvar.setVisible(false);
+        btnCaneta.setDisable(true);
         image = null;
-        file=null;
+        file = null;
         imagemView.setImage(image);
-        
+
     }
 
     @FXML
     private void evtSair(ActionEvent event) {
-        if(modified){
+        if (modified) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Detectamos uma imagem não salva");
             alert.setContentText("Salvar a imagem?");
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                if(file!=null){
-                try{
-                    ImageIO.write(bImage, "jpg", file);
-                }catch(IOException e){
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Erro:"+e.getMessage());
-                    alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                if (file != null) {
+                    try {
+                        ImageIO.write(bImage, "jpg", file);
+                    } catch (IOException e) {
+                        alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Erro:" + e.getMessage());
+                        alert.showAndWait();
+                    }
                 }
             }
-            } 
         }
-        Platform.exit();    
+        Platform.exit();
     }
 
     @FXML
     private void evtTonsCinza(ActionEvent event) {
         int media;
-        if(image!=null){
-           bImage=SwingFXUtils.fromFXImage(image, null);
-           int pixel[] = {0,0,0,0};
-           WritableRaster raster =bImage.getRaster();
-           for(int y=0;y<image.getHeight();y++){
-               for(int x=0;x<image.getWidth();x++){
-                   raster.getPixel(x, y, pixel);
-                   media = (int) ((pixel[0]*0.299+pixel[1]*0.587+pixel[2]*0.114)/3);
-                   pixel[0] = media;
-                   pixel[1] = media;
-                   pixel[2]= media;
-                   raster.setPixel(x, y, pixel);
-               }
-           }
-           image = SwingFXUtils.toFXImage(bImage, null);
-           imagemView.setImage(image);
-           
+        if (image != null) {
+            bImage = SwingFXUtils.fromFXImage(image, null);
+            int pixel[] = {0, 0, 0, 0};
+            WritableRaster raster = bImage.getRaster();
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    raster.getPixel(x, y, pixel);
+                    media = (int) ((pixel[0] * 0.299 + pixel[1] * 0.587 + pixel[2] * 0.114) / 3);
+                    pixel[0] = media;
+                    pixel[1] = media;
+                    pixel[2] = media;
+                    raster.setPixel(x, y, pixel);
+                }
+            }
+            image = SwingFXUtils.toFXImage(bImage, null);
+            imagemView.setImage(image);
+
         }
         modified = true;
-        
+
     }
     //inicio das funções usando imageJ
-    
 
     @FXML
     private void evtSobre(ActionEvent event) {
@@ -290,12 +296,11 @@ public class FXMLDocumentController implements Initializable {
         alert.setContentText("Aplicativo criado para manipulação de imagens\nFunções manuais:\nEscala de cinza(desenvolvida em aula)\nPreto e branco\nNegativo\nEspelho vertical\nEspelho horizontal");
         alert.showAndWait();
     }
-    
-    //teste, ainda não faz parte do produto final
 
+    //teste, ainda não faz parte do produto final
     @FXML
     private void evtCaneta(ActionEvent event) {
-        if(!canetaAtiva){
+        if (!canetaAtiva) {
             canetaAtiva = true;
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Caneta");
@@ -303,8 +308,7 @@ public class FXMLDocumentController implements Initializable {
             alert.showAndWait();
             optCaneta.setDisable(false);
             optCaneta.setVisible(true);
-        }
-        else{
+        } else {
             canetaAtiva = false;
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Caneta");
@@ -321,10 +325,10 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtMouseArrasta(MouseEvent event) {
-        bImage=SwingFXUtils.fromFXImage(image, null);
+        bImage = SwingFXUtils.fromFXImage(image, null);
         graph = bImage.createGraphics();
         graph.setColor(corsel);
-        if(canetaAtiva && !tipo && !pinta && !quadrado){
+        if (canetaAtiva && !tipo && !pinta && !quadrado) {
             x1 = (int) event.getX();
             y1 = (int) event.getY();
             x2 = (int) event.getX();
@@ -332,26 +336,26 @@ public class FXMLDocumentController implements Initializable {
             graph.drawLine(x1, y1, x2, y2);
             graph.dispose();
             image = SwingFXUtils.toFXImage(bImage, null);
-           imagemView.setImage(image);
+            imagemView.setImage(image);
             modified = true;
         }
-        if(pinta && !quadrado){
+        if (pinta && !quadrado) {
             x1 = (int) event.getX();
             y1 = (int) event.getY();
             x2 = (int) event.getX();
             y2 = (int) event.getY();
-            graph.fillOval(x1, y1, (int) sldTamanhoPincel.getValue(),(int) sldTamanhoPincel.getValue());
+            graph.fillOval(x1, y1, (int) sldTamanhoPincel.getValue(), (int) sldTamanhoPincel.getValue());
             graph.dispose();
             image = SwingFXUtils.toFXImage(bImage, null);
-           imagemView.setImage(image);
+            imagemView.setImage(image);
             modified = true;
         }
-        
+
     }
 
     @FXML
     private void evtMousePressionado(MouseEvent event) {
-        if(canetaAtiva){
+        if (canetaAtiva) {
             x1 = (int) event.getX();
             y1 = (int) event.getY();
         }
@@ -359,23 +363,23 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtCorAmarelo(ActionEvent event) {
-        corsel=Color.YELLOW;
+        corsel = Color.YELLOW;
     }
 
     @FXML
     private void evtCorAzul(ActionEvent event) {
-        corsel=Color.BLUE;
+        corsel = Color.BLUE;
     }
 
     @FXML
     private void evtCorVerde(ActionEvent event) {
-        corsel=Color.GREEN;
+        corsel = Color.GREEN;
         //graph.setColor(Color.GREEN);
     }
 
     @FXML
     private void evtCorVermelho(ActionEvent event) {
-        corsel=Color.RED;
+        corsel = Color.RED;
     }
 
     @FXML
@@ -390,10 +394,10 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtMouseSolta(MouseEvent event) {
-       bImage=SwingFXUtils.fromFXImage(image, null);
+        bImage = SwingFXUtils.fromFXImage(image, null);
         graph = bImage.createGraphics();
         graph.setColor(corsel);
-        if(canetaAtiva && tipo && !pinta && !quadrado){
+        if (canetaAtiva && tipo && !pinta && !quadrado) {
             x2 = (int) event.getX();
             y2 = (int) event.getY();
             graph.drawLine(x1, y1, x2, y2);
@@ -402,10 +406,10 @@ public class FXMLDocumentController implements Initializable {
             imagemView.setImage(image);
             modified = true;
         }
-        if(quadrado){
+        if (quadrado) {
             x2 = (int) event.getX();
             y2 = (int) event.getY();
-            graph.fillRect(x1, y1, x2+x1, y2+y1);
+            graph.fillRect(x1, y1, x2 + x1, y2 + y1);
             graph.dispose();
             image = SwingFXUtils.toFXImage(bImage, null);
             imagemView.setImage(image);
@@ -424,258 +428,220 @@ public class FXMLDocumentController implements Initializable {
         quadrado = true;
     }
 
-    
-    
-    private int[] geraHSI(int R, int G, int B){
-        int hsi[] = {0,0,0};
+    private int[] geraHSI(int R, int G, int B) {
+        int hsi[] = {0, 0, 0};
         //primeiro passo, normaliza
-        double r = (double)R/(R+G+B);
-        double g = (double)G/(R+G+B);
-        double b = (double)B/(R+G+B);
+        double r = (double) R / (R + G + B);
+        double g = (double) G / (R + G + B);
+        double b = (double) B / (R + G + B);
         double h = 0;
         double s = 0;
         double i = 0;
-        if(b>g){
-            h = (2*Math.PI) - Math.acos( (0.5 * ((r-g)+(r-b)) ) /( Math.pow(Math.pow((r-g), 2) +((r-b)*(g-b)), 0.5) ));
-        }else{
-            h = Math.acos( (0.5 * ((r-g)+(r-b)) ) /( Math.pow(Math.pow((r-g), 2) +((r-b)*(g-b)), 0.5) ) );
+        if (b > g) {
+            h = (2 * Math.PI) - Math.acos((0.5 * ((r - g) + (r - b))) / (Math.pow(Math.pow((r - g), 2) + ((r - b) * (g - b)), 0.5)));
+        } else {
+            h = Math.acos((0.5 * ((r - g) + (r - b))) / (Math.pow(Math.pow((r - g), 2) + ((r - b) * (g - b)), 0.5)));
         }
-        
+
         double inter = Math.min(r, g);
-        s = 1 - 3*Math.min(b, inter);
-        i = ((R+G+B)/3);
-        hsi[0] = (int)((h*180)/Math.PI);
-        hsi[1] = (int)(s*100);
-        hsi[2] = (int)i;
+        s = 1 - 3 * Math.min(b, inter);
+        i = ((R + G + B) / 3);
+        hsi[0] = (int) ((h * 180) / Math.PI);
+        hsi[1] = (int) (s * 100);
+        hsi[2] = (int) i;
         return hsi;
     }
-    
-    private int[] converteHSIparaRGB(int H, int S, int I){
-        int rgb[] = {0,0,0};
+
+    private int[] converteHSIparaRGB(int H, int S, int I) {
+        int rgb[] = {0, 0, 0};
         double h = 0;
         double s = 0;
         double i = 0;
-        
-        h = H*(Math.PI/180);
-        s = (double)S/100;
-        i = (double)I/255;
-        
-        double x,y,z;
-        
-        
-        
-        if(h<((2*Math.PI)/3)){
-            x = (i*(1-s));
-            y = i*(1+(s*Math.cos(h))/(Math.cos(Math.PI/3-h)));
-            z = 3*i - (x+y);
-            rgb[0] = (int)(y*255);
-            rgb[1] = (int)(z*255);
-            rgb[2] = (int)(x*255);
+
+        h = H * (Math.PI / 180);
+        s = (double) S / 100;
+        i = (double) I / 255;
+
+        double x, y, z;
+
+        if (h < ((2 * Math.PI) / 3)) {
+            x = (i * (1 - s));
+            y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
+            z = 3 * i - (x + y);
+            rgb[0] = (int) (y * 255);
+            rgb[1] = (int) (z * 255);
+            rgb[2] = (int) (x * 255);
+        } else if (((2 * Math.PI) / 3) <= h && h < ((4 * Math.PI) / 3)) {
+            h = h - ((2 * Math.PI) / 3);
+            x = (i * (1 - s));
+            y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
+            z = 3 * i - (x + y);
+            rgb[0] = (int) (x * 255);
+            rgb[1] = (int) (y * 255);
+            rgb[2] = (int) (z * 255);
+        } else {
+            h = h - ((4 * Math.PI) / 3);
+            x = (i * (1 - s));
+            y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
+            z = 3 * i - (x + y);
+            rgb[0] = (int) (z * 255);
+            rgb[1] = (int) (x * 255);
+            rgb[2] = (int) (y * 255);
         }
-        else if(((2*Math.PI)/3)<= h && h < ((4*Math.PI)/3)){
-            h = h - ((2*Math.PI)/3);
-            x = (i*(1-s));
-            y = i*(1+(s*Math.cos(h))/(Math.cos(Math.PI/3-h)));
-            z = 3*i - (x+y);
-            rgb[0] = (int)(x*255);
-            rgb[1] = (int)(y*255);
-            rgb[2] = (int)(z*255);
-        }
-        else{
-            h = h - ((4*Math.PI)/3);
-            x = (i*(1-s));
-            y = i*(1+(s*Math.cos(h))/(Math.cos(Math.PI/3-h)));
-            z = 3*i - (x+y);
-            rgb[0] = (int)(z*255);
-            rgb[1] = (int)(x*255);
-            rgb[2] = (int)(y*255);
-        }
-        
+
         return rgb;
     }
-    
-    private void geraImagemHSI(){
+
+    private void geraImagemHSI() {
         int media;
         int vet[];
-        Hsi aux = new Hsi(0,0,0);
-        if(image!=null){
-           bImage=SwingFXUtils.fromFXImage(image, null);
-           int pixel[] = {0,0,0,0};
-           WritableRaster raster =bImage.getRaster();
-           for(int y=0;y<image.getHeight();y++){
-               for(int x=0;x<image.getWidth();x++){
-                   raster.getPixel(x, y, pixel);
-                   if(obj[y][x].getH() > 360){
-                       aux.setH(360);
-                   }else if(obj[y][x].getH()<0){
-                       aux.setH(100);
-                   }else{
-                       aux.setH(obj[y][x].getH());
-                   }
-                   if(obj[y][x].getS() > 100){
-                       aux.setS(100);
-                   }else if(obj[y][x].getS()<0){
-                       aux.setS(0);
-                   }
-                   else{
-                       aux.setS(obj[y][x].getS());
-                   }
-                   if(obj[y][x].getI() > 255){
-                       aux.setI(255);
-                   }else if(obj[y][x].getI()<0){
-                       aux.setI(0);
-                   }
-                   else{
-                       aux.setI(obj[y][x].getI());
-                   }
-                   vet = this.converteHSIparaRGB(aux.getH(), aux.getS(), aux.getI());
-                   pixel[0] = vet[0];
-                   pixel[1] = vet[1];
-                   pixel[2]= vet[2];
-                   raster.setPixel(x, y, pixel);
-               }
-           }
-           image = SwingFXUtils.toFXImage(bImage, null);
-           imagemView.setImage(image);
-           
+        Hsi aux = new Hsi(0, 0, 0);
+        if (image != null) {
+            bImage = SwingFXUtils.fromFXImage(image, null);
+            int pixel[] = {0, 0, 0, 0};
+            WritableRaster raster = bImage.getRaster();
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    raster.getPixel(x, y, pixel);
+                    if (obj[y][x].getH() > 360) {
+                        aux.setH(360);
+                    } else if (obj[y][x].getH() < 0) {
+                        aux.setH(100);
+                    } else {
+                        aux.setH(obj[y][x].getH());
+                    }
+                    if (obj[y][x].getS() > 100) {
+                        aux.setS(100);
+                    } else if (obj[y][x].getS() < 0) {
+                        aux.setS(0);
+                    } else {
+                        aux.setS(obj[y][x].getS());
+                    }
+                    if (obj[y][x].getI() > 255) {
+                        aux.setI(255);
+                    } else if (obj[y][x].getI() < 0) {
+                        aux.setI(0);
+                    } else {
+                        aux.setI(obj[y][x].getI());
+                    }
+                    vet = this.converteHSIparaRGB(aux.getH(), aux.getS(), aux.getI());
+                    pixel[0] = vet[0];
+                    pixel[1] = vet[1];
+                    pixel[2] = vet[2];
+                    raster.setPixel(x, y, pixel);
+                }
+            }
+            image = SwingFXUtils.toFXImage(bImage, null);
+            imagemView.setImage(image);
+
         }
         modified = true;
     }
 
     @FXML
     private void evtPegaCor(MouseEvent event) {
-        
+
         int media;
-        int pixel[] = {0,0,0,0};
-        if(image!=null){
-           bImage=SwingFXUtils.fromFXImage(image, null);
-           
-           WritableRaster raster =bImage.getRaster();
-           int x,y;
-           x = (int)event.getX();
-           y = (int)event.getY();
-           raster.getPixel(x, y, pixel);
-           
-           
+        int pixel[] = {0, 0, 0, 0};
+        if (image != null) {
+            bImage = SwingFXUtils.fromFXImage(image, null);
+
+            WritableRaster raster = bImage.getRaster();
+            int x, y;
+            x = (int) event.getX();
+            y = (int) event.getY();
+            raster.getPixel(x, y, pixel);
+
         }
-        
-        resultR.setText(""+pixel[0]);
-        resultG.setText(""+pixel[1]);
-        resultB.setText(""+pixel[2]);
-        
-        resultC.setText(""+(255-pixel[0]));
-        resultM.setText(""+(255-pixel[1]));
-        resultY.setText(""+(255-pixel[2]));
-        
+
+        resultR.setText("" + pixel[0]);
+        resultG.setText("" + pixel[1]);
+        resultB.setText("" + pixel[2]);
+
+        resultC.setText("" + (255 - pixel[0]));
+        resultM.setText("" + (255 - pixel[1]));
+        resultY.setText("" + (255 - pixel[2]));
+
         int vetor[] = this.geraHSI(pixel[0], pixel[1], pixel[2]);
         //int vetor[]= this.geraHSI(100,150,200);
-        resultH.setText(""+vetor[0]);
-        resultS.setText(""+vetor[1]);
-        resultI.setText(""+vetor[2]);
-        
+        resultH.setText("" + vetor[0]);
+        resultS.setText("" + vetor[1]);
+        resultI.setText("" + vetor[2]);
+
         int rgb[] = this.converteHSIparaRGB(vetor[0], vetor[1], vetor[2]);
     }
 
     @FXML
     private void evtIntensidade(ActionEvent event) {
-        for(int y = 0;y<image.getHeight();y++){
-            for(int x = 0;x<image.getWidth();x++){
-                obj[y][x].setI(obj[y][x].getI()+10);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                obj[y][x].setI(obj[y][x].getI() + 10);
             }
         }
-        
-        
+
         this.geraImagemHSI();
     }
 
     @FXML
     private void evtDIntensidade(ActionEvent event) {
-        for(int y = 0;y<image.getHeight();y++){
-            for(int x = 0;x<image.getWidth();x++){
-                obj[y][x].setI(obj[y][x].getI()-10);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                obj[y][x].setI(obj[y][x].getI() - 10);
             }
         }
-        
-        
+
         this.geraImagemHSI();
     }
 
     @FXML
     private void evtAumentaSaturacao(ActionEvent event) {
-         for(int y = 0;y<image.getHeight();y++){
-            for(int x = 0;x<image.getWidth();x++){
-                obj[y][x].setS(obj[y][x].getS()+10);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                obj[y][x].setS(obj[y][x].getS() + 10);
             }
         }
-        
-        
+
         this.geraImagemHSI();
     }
 
     @FXML
     private void evtDiminuiSaturacao(ActionEvent event) {
-        for(int y = 0;y<image.getHeight();y++){
-            for(int x = 0;x<image.getWidth();x++){
-                obj[y][x].setS(obj[y][x].getS()-10);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                obj[y][x].setS(obj[y][x].getS() - 10);
             }
         }
-        
-        
+
         this.geraImagemHSI();
     }
 
     @FXML
     private void evtAumentaMatiz(ActionEvent event) {
-        for(int y = 0;y<image.getHeight();y++){
-            for(int x = 0;x<image.getWidth();x++){
-                obj[y][x].setH(obj[y][x].getH()+10);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                obj[y][x].setH(obj[y][x].getH() + 10);
             }
         }
-        
-        
+
         this.geraImagemHSI();
     }
 
     @FXML
     private void evtDiminuiMatiz(ActionEvent event) {
-        for(int y = 0;y<image.getHeight();y++){
-            for(int x = 0;x<image.getWidth();x++){
-                obj[y][x].setH(obj[y][x].getH()-10);
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                obj[y][x].setH(obj[y][x].getH() - 10);
             }
         }
-        
-        
+
         this.geraImagemHSI();
     }
 
     @FXML
     private void evtBinarizacaoManual(ActionEvent event) {
-        int media;
-        if(image!=null){
-           bImage=SwingFXUtils.fromFXImage(image, null);
-           int pixel[] = {0,0,0,0};
-           WritableRaster raster =bImage.getRaster();
-           for(int y=0;y<image.getHeight();y++){
-               for(int x=0;x<image.getWidth();x++){
-                   raster.getPixel(x, y, pixel);
-                   media = (int) ((pixel[0]+pixel[1]+pixel[2])/3);
-                   if(media > 127){
-                       media = 255;
-                   }
-                   else{
-                       media = 0;
-                   }
-                   pixel[0] = media;
-                   pixel[1] = media;
-                   pixel[2]= media;
-                   raster.setPixel(x, y, pixel);
-               }
-           }
-           image = SwingFXUtils.toFXImage(bImage, null);
-           imagemView.setImage(image);
-           
-        }
-        modified = true;
+        txBinarizar.setVisible(true);
+        btnBinarizar.setVisible(true);
+
     }
 
     @FXML
@@ -685,37 +651,61 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void gerarHistograma(ActionEvent event) {
         this.evtTonsCinza(event);
-        
-         if(image!=null){
-           bImage=SwingFXUtils.fromFXImage(image, null);
-           int pixel[] = {0,0,0,0};
-           WritableRaster raster =bImage.getRaster();
-           for(int y=0;y<image.getHeight();y++){
-               for(int x=0;x<image.getWidth();x++){
-                   raster.getPixel(x, y, pixel);
-                   vetor[pixel[0]]++;
-               }
-           }
-           
+
+        if (image != null) {
+            bImage = SwingFXUtils.fromFXImage(image, null);
+            int pixel[] = {0, 0, 0, 0};
+            WritableRaster raster = bImage.getRaster();
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    raster.getPixel(x, y, pixel);
+                    vetor[pixel[0]]++;
+                }
+            }
+
         }
         XYChart.Series escala = new XYChart.Series();
-        for(int i = 0;i<256;i++){
-            escala.getData().add(new XYChart.Data(""+i, vetor[i]));
+        for (int i = 0; i < 256; i++) {
+            escala.getData().add(new XYChart.Data("" + i, vetor[i]));
         }
         graficoHisto.getData().add(escala);
         graficoHisto.setVisible(true);
-        
+
     }
 
     @FXML
     private void equalizarHistograma(ActionEvent event) {
     }
 
-
-  
-    
-    
-    
-}
+    @FXML
+    private void evtBinarizarManual(ActionEvent event) {
+        int media;
+        int ponto = Integer.parseInt(txBinarizar.getText());
         
+        if (image != null) {
+            bImage = SwingFXUtils.fromFXImage(image, null);
+            int pixel[] = {0, 0, 0, 0};
+            WritableRaster raster = bImage.getRaster();
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    raster.getPixel(x, y, pixel);
+                    media = (int) ((pixel[0] + pixel[1] + pixel[2]) / 3);
+                    if (media > ponto) {
+                        media = 255;
+                    } else {
+                        media = 0;
+                    }
+                    pixel[0] = media;
+                    pixel[1] = media;
+                    pixel[2] = media;
+                    raster.setPixel(x, y, pixel);
+                }
+            }
+            image = SwingFXUtils.toFXImage(bImage, null);
+            imagemView.setImage(image);
 
+        }
+        modified = true;
+    }
+
+}
