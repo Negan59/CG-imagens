@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="PhotoFX">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/PhotoFX.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
