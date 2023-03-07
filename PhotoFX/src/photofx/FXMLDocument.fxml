@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -46,16 +47,7 @@
                 </Menu>
                 <Menu fx:id="tfImagens" disable="true" mnemonicParsing="false" text="Imagens" visible="false">
                   <items>
-                        <MenuItem mnemonicParsing="false" onAction="#evtIntensidade" text="aumentar intensidade" />
-                        <MenuItem mnemonicParsing="false" onAction="#evtDIntensidade" text="diminuir intensidade" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#evtAumentaSaturacao" text="aumentar saturação" />
-                        <MenuItem mnemonicParsing="false" onAction="#evtDiminuiSaturacao" text="diminuir saturação" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
                     <MenuItem mnemonicParsing="false" onAction="#evtTonsCinza" text="Tons de cinza" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#evtAumentaMatiz" text="aumentar matiz" />
-                        <MenuItem mnemonicParsing="false" onAction="#evtDiminuiMatiz" text="diminuir matiz" />
                   </items>
                 </Menu>
                   <Menu fx:id="tfBinario" disable="true" mnemonicParsing="false" text="Binarização" visible="false">
@@ -129,7 +121,7 @@
    <center>
       <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <content>
-            <ImageView fx:id="imagemView" fitHeight="323.0" fitWidth="602.0" onMouseDragged="#evtMouseArrasta" onMouseMoved="#evtPegaCor" onMousePressed="#evtMousePressionado" onMouseReleased="#evtMouseSolta" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imagemView" fitHeight="222.0" fitWidth="298.0" onMouseDragged="#evtMouseArrasta" onMouseMoved="#evtPegaCor" onMousePressed="#evtMousePressionado" onMouseReleased="#evtMouseSolta" pickOnBounds="true" preserveRatio="true" />
          </content>
       </ScrollPane>
    </center>
@@ -221,13 +213,56 @@
       </HBox>
    </bottom>
    <right>
-      <BarChart fx:id="graficoHisto" prefHeight="222.0" prefWidth="340.0" BorderPane.alignment="CENTER">
+      <BarChart fx:id="graficoHisto" prefHeight="233.0" prefWidth="379.0" BorderPane.alignment="CENTER">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" />
+          <NumberAxis prefWidth="7.0" side="LEFT" />
         </yAxis>
       </BarChart>
    </right>
+   <left>
+      <ScrollPane prefHeight="222.0" prefWidth="154.0" BorderPane.alignment="CENTER">
+         <content>
+            <VBox fx:id="vboxEsquerda" prefHeight="212.0" prefWidth="154.0" visible="false">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Intensidade : " />
+                        <Button mnemonicParsing="false" onAction="#evtDIntensidade" style="-fx-background-color: red;" text="-" textFill="WHITE">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#evtIntensidade" style="-fx-background-color: green;" text="+" textFill="WHITE" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="70.0" text="Matiz : " />
+                        <Button mnemonicParsing="false" onAction="#evtDiminuiMatiz" style="-fx-background-color: red;" text="-" textFill="WHITE">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#evtAumentaMatiz" style="-fx-background-color: green;" text="+" textFill="WHITE" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="68.0" text="Saturação :" />
+                        <Button mnemonicParsing="false" onAction="#evtDiminuiSaturacao" style="-fx-background-color: red;" text="-" textFill="WHITE">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#evtAumentaSaturacao" style="-fx-background-color: green;" text="+" textFill="WHITE" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </left>
 </BorderPane>

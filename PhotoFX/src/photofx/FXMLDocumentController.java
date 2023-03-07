@@ -103,6 +103,8 @@ public class FXMLDocumentController implements Initializable {
     private TextField txBinarizar;
     @FXML
     private Button btnBinarizar;
+    @FXML
+    private VBox vboxEsquerda;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -113,7 +115,8 @@ public class FXMLDocumentController implements Initializable {
     private void evtAbrir(ActionEvent event) {
         graficoHisto.setVisible(false);
         if (!graficoHisto.getData().isEmpty()) {
-            graficoHisto.getData().remove(0);
+            graficoHisto.getData().clear();
+            //graficoHisto.getData().remove(0);
         }
 
         FileChooser filechooser = new FileChooser();
@@ -139,6 +142,7 @@ public class FXMLDocumentController implements Initializable {
             tfBinario.setDisable(false);
             tfHistograma.setVisible(true);
             tfHistograma.setDisable(false);
+            vboxEsquerda.setVisible(true);
             btnSalvarComo.setDisable(false);
             btnSalvarComo.setVisible(true);
             btnSalvar.setDisable(false);
@@ -646,12 +650,58 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtBinarizacaoOtsu(ActionEvent event) {
+        double altura = image.getHeight();
+        double largura = image.getWidth();
+        //arruma vetor - num/M*N
+        double vetorN[] = new double[256];
+        for(int i = 0;i<256;i++){
+            vetorN[i] = vetor[i]/(altura*largura);
+        }
+        
+        //media global
+        double mediaGlobal = 0;
+        for(int i = 0;i<256;i++){
+            mediaGlobal+=i*vetorN[i];
+        }
+        
+        //variância global
+        double varianciaGlobal = 0;
+        for(int i = 0;i<256;i++){
+            mediaGlobal+=Math.pow(i-mediaGlobal, 2) * vetorN[i];
+        }
+        
+        //encontrar valor ótimo
+        int threshold = 0;
+        double maxVariance = 0;
+        double sum = 0;
+        double sumB = 0;
+        int count = 0;
+        for (int i = 0; i < 256; i++) {
+            sum += i * vetorN[i];
+            count += vetor[i];
+
+            if (count == 0) {
+                continue;
+            }
+
+            double p = (double) count / (altura*largura);
+            double q = 1 - p;
+
+            sumB += i * vetorN[i];
+
+            double meanB = sumB / count;
+            double meanF = (sum - sumB) / ((altura*largura) - count);
+
+            double betweenClassVariance = p * q * Math.pow(meanB - meanF, 2);
+
+            if (betweenClassVariance > maxVariance) {
+                maxVariance = betweenClassVariance;
+                threshold = i;
+            }
+        }
+        txBinarizar.setText(""+threshold);
     }
-
-    @FXML
-    private void gerarHistograma(ActionEvent event) {
-        this.evtTonsCinza(event);
-
+    public void manipula(){
         if (image != null) {
             bImage = SwingFXUtils.fromFXImage(image, null);
             int pixel[] = {0, 0, 0, 0};
@@ -670,11 +720,54 @@ public class FXMLDocumentController implements Initializable {
         }
         graficoHisto.getData().add(escala);
         graficoHisto.setVisible(true);
+    }
+    @FXML
+    private void gerarHistograma(ActionEvent event) {
+        for(int i = 0;i<256;i++){
+            vetor[i] = 0;
+        }
+        this.evtTonsCinza(event);
+
+        manipula();
 
     }
 
     @FXML
     private void equalizarHistograma(ActionEvent event) {
+        double altura = image.getHeight();
+        double largura = image.getWidth();
+        
+        //arruma vetor - num/M*N
+        double vetorN[] = new double[256];
+        for(int i = 0;i<256;i++){
+            vetorN[i] = vetor[i]/(altura*largura);
+        }
+        
+        //distribuição acumulado
+        double cdf[] = new double[256];
+        cdf[0] = vetorN[0];
+        for (int i = 1; i < 256; i++) {
+            cdf[i] = cdf[i - 1] + vetorN[i];
+        }
+        
+        //equalizar imagem
+        int media;
+        bImage = SwingFXUtils.fromFXImage(image, null);
+            int pixel[] = {0, 0, 0, 0};
+            WritableRaster raster = bImage.getRaster();
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    raster.getPixel(x, y, pixel);
+                    pixel[0] =  (int) (cdf[pixel[0]] * 255);
+                    pixel[1] = (int) (cdf[pixel[1]] * 255);
+                    pixel[2] = (int) (cdf[pixel[2]] * 255);
+                    raster.setPixel(x, y, pixel);
+                }
+            }
+            image = SwingFXUtils.toFXImage(bImage, null);
+            imagemView.setImage(image);
+            manipula();
+        
     }
 
     @FXML
