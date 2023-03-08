@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cg.parte2.CanetaMasterController">
+   <right>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="400.0" prefWidth="124.0">
+               <children>
+                  <Label style="-fx-font-weight: bold;" text="Reta">
+                     <VBox.margin>
+                        <Insets left="10.0" top="18.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Label>
+                  <RadioButton fx:id="retaReal" mnemonicParsing="false" text="Equação real">
+                     <padding>
+                        <Insets left="5.0" top="5.0" />
+                     </padding>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="exp" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="dda" mnemonicParsing="false" text="DDA" toggleGroup="$exp">
+                     <padding>
+                        <Insets left="5.0" top="5.0" />
+                     </padding>
+                  </RadioButton>
+                  <RadioButton fx:id="retaMedio" mnemonicParsing="false" text="Ponto médio" toggleGroup="$exp">
+                     <padding>
+                        <Insets left="5.0" top="5.0" />
+                     </padding>
+                  </RadioButton>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="10.0" prefHeight="400.0" prefWidth="124.0">
+               <children>
+                  <Label style="-fx-font-weight: bold;" text="Circunferência">
+                     <VBox.margin>
+                        <Insets left="10.0" top="18.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Label>
+                  <RadioButton fx:id="cirReal" mnemonicParsing="false" text="Equação real" toggleGroup="$exp">
+                     <padding>
+                        <Insets left="5.0" top="5.0" />
+                     </padding>
+                  </RadioButton>
+                  <RadioButton fx:id="cirTrig" mnemonicParsing="false" text="Trigonométrica" toggleGroup="$exp">
+                     <padding>
+                        <Insets left="5.0" top="5.0" />
+                     </padding>
+                  </RadioButton>
+                  <RadioButton fx:id="cirMedio" mnemonicParsing="false" text="Ponto médio" toggleGroup="$exp">
+                     <padding>
+                        <Insets left="5.0" top="5.0" />
+                     </padding>
+                  </RadioButton>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="210.0" prefHeight="400.0" prefWidth="124.0">
+               <children>
+                  <Label style="-fx-font-weight: bold;" text="Elipse">
+                     <VBox.margin>
+                        <Insets left="10.0" top="18.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Label>
+                  <RadioButton fx:id="elipse" mnemonicParsing="false" text="Ponto médio" toggleGroup="$exp">
+                     <padding>
+                        <Insets left="5.0" top="5.0" />
+                     </padding>
+                  </RadioButton>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <ImageView fx:id="imgView" fitHeight="402.0" fitWidth="479.0" onMousePressed="#evtPegaXY" onMouseReleased="#evtPegaXYFinal" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
