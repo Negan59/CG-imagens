@@ -60,8 +60,6 @@ public class CanetaMasterController implements Initializable {
         x2 = event.getX();
         y2 = event.getY();
 
-        System.out.println("x2 - " + x2 + " y2 - " + y2);
-
         if (retaReal.isSelected()) {
             this.desenhaRetaReal();
         } else if (dda.isSelected()) {
@@ -83,20 +81,16 @@ public class CanetaMasterController implements Initializable {
     private void evtPegaXY(MouseEvent event) {
         x1 = event.getX();
         y1 = event.getY();
-        System.out.println("x1 - " + x1 + " y1 - " + y1);
 
     }
 
     private void desenhaRetaReal() {
-        System.out.println("Reta real");
         BufferedImage bimage = null;
         bimage = SwingFXUtils.fromFXImage(image, null);
         int pixel[] = {0, 0, 0, 0};
         WritableRaster raster = bimage.getRaster();
         double dy = y2 - y1;
         double dx = x2 - x1;
-        System.out.println("dx - " + dx);
-        System.out.println("dy - " + dy);
 
         if (dx < 0) { // se dx é negativo, inverte a ordem dos pontos
             double tmp = x1;
@@ -125,7 +119,6 @@ public class CanetaMasterController implements Initializable {
                     raster.setPixel((int) x, round(y), pixel);
                 }
             } else {
-                System.out.println("quarto e quinto octantes");
                 for (x = x2; x >= x1; x--) {
                     y = y1 + m * (x - x1);
                     raster.getPixel((int) x, round(y), pixel);
@@ -147,7 +140,6 @@ public class CanetaMasterController implements Initializable {
                     raster.setPixel((int) x, round(y), pixel);
                 }
             } else {
-                System.out.println("este é o 6 octante?");
                 for (y = y2; y <= y1; y++) {
                     x = x1 + (y - y1) / m;
                     raster.getPixel((int) x, round(y), pixel);
@@ -179,7 +171,6 @@ public class CanetaMasterController implements Initializable {
         bimage = SwingFXUtils.fromFXImage(image, null);
         int pixel[] = {0, 0, 0, 0};
         WritableRaster raster = bimage.getRaster();
-        System.out.println("dda");
         double dy = y2 - y1;
         double dx = x2 - x1;
 
@@ -223,7 +214,6 @@ public class CanetaMasterController implements Initializable {
     }
 
     private void retaMedio() {
-        System.out.println("reta ponto médio");
         BufferedImage bimage = null;
         bimage = SwingFXUtils.fromFXImage(image, null);
         int pixel[] = {0, 0, 0, 0};
@@ -315,7 +305,6 @@ public class CanetaMasterController implements Initializable {
     }
 
     private void cirMedio() {
-        System.out.println("circunferencia ponto médio");
         double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         double x = 0;
         double y = raio;
@@ -334,7 +323,6 @@ public class CanetaMasterController implements Initializable {
     }
 
     private void cirReal() {
-        System.out.println("circunferência real");
         double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         double x = 0;
         double y = raio;
@@ -355,8 +343,6 @@ public class CanetaMasterController implements Initializable {
     }
 
     private void cirTrig() {
-        double centroX = (x1 + x2) / 2;
-        double centroY = (y1 + y2) / 2;
         double deltaTheta = Math.PI / 180.0; // 1 degree in radians
         int numSegments = (int) Math.ceil(2.0 * Math.PI / deltaTheta);
         double dtheta = 2.0 * Math.PI / numSegments;
@@ -364,9 +350,9 @@ public class CanetaMasterController implements Initializable {
 
         for (int i = 0; i < numSegments; i++) {
             double theta = i * dtheta;
-            int x = (int) Math.round(centroX + raio * Math.cos(theta));
-            int y = (int) Math.round(centroY + raio * Math.sin(theta));
-            this.imprimeSimetrico(x, y);
+            double x = raio*Math.cos(theta);
+            double y = raio*Math.sin(theta);
+            this.imprimeSimetrico((int)x, (int)y);
         }
     }
 
@@ -419,10 +405,6 @@ public class CanetaMasterController implements Initializable {
         bimage = SwingFXUtils.fromFXImage(image, null);
         int pixel[] = {0, 0, 0, 0};
         WritableRaster raster = bimage.getRaster();
-        System.out.println("x1 - " + x1 + " x - " + x);
-        System.out.println("y1 - " + y1 + " y - " + y);
-
-        
         //1
         raster.getPixel((int) (x1 + x), (int) (y1 + y), pixel);
         pixel[0] = 0;
