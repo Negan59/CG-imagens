@@ -40,8 +40,8 @@ public class CanetaMasterController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        int altura = 700;
-        int largura = 800;
+        int altura = 1200;
+        int largura = 768;
 
         BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
         int cor = 0xFFFFFFFF; // branco
@@ -60,7 +60,7 @@ public class CanetaMasterController implements Initializable {
         x2 = event.getX();
         y2 = event.getY();
 
-        System.out.println("x2 - "+x2+" y2 - "+y2);
+        System.out.println("x2 - " + x2 + " y2 - " + y2);
 
         if (retaReal.isSelected()) {
             this.desenhaRetaReal();
@@ -83,7 +83,7 @@ public class CanetaMasterController implements Initializable {
     private void evtPegaXY(MouseEvent event) {
         x1 = event.getX();
         y1 = event.getY();
-        System.out.println("x1 - "+x1+" y1 - "+y1);
+        System.out.println("x1 - " + x1 + " y1 - " + y1);
 
     }
 
@@ -95,8 +95,8 @@ public class CanetaMasterController implements Initializable {
         WritableRaster raster = bimage.getRaster();
         double dy = y2 - y1;
         double dx = x2 - x1;
-        System.out.println("dx - "+dx);
-        System.out.println("dy - "+dy);
+        System.out.println("dx - " + dx);
+        System.out.println("dy - " + dy);
 
         if (dx < 0) { // se dx é negativo, inverte a ordem dos pontos
             double tmp = x1;
@@ -113,8 +113,8 @@ public class CanetaMasterController implements Initializable {
         double y;
         double x;
 
-        if(dx > dy) {
-            if(x2>x1){
+        if (dx > dy) {
+            if (x2 > x1) {
                 //primeiro e oitavo octantes
                 for (x = x1; x <= x2; x++) {
                     y = y1 + m * (x - x1);
@@ -124,10 +124,9 @@ public class CanetaMasterController implements Initializable {
                     pixel[2] = 0;
                     raster.setPixel((int) x, round(y), pixel);
                 }
-            }
-            else{
+            } else {
                 System.out.println("quarto e quinto octantes");
-                for(x=x2;x>=x1;x--){
+                for (x = x2; x >= x1; x--) {
                     y = y1 + m * (x - x1);
                     raster.getPixel((int) x, round(y), pixel);
                     pixel[0] = 0;
@@ -136,19 +135,18 @@ public class CanetaMasterController implements Initializable {
                     raster.setPixel((int) x, round(y), pixel);
                 }
             }
-        }
-        else{
-            if(y2>y1){
+        } else {
+            if (y2 > y1) {
 
-                for(y = y1;y<=y2;y++){
-                    x = x1 + (y - y1)/m;
-                    raster.getPixel((int)x, round(y), pixel);
+                for (y = y1; y <= y2; y++) {
+                    x = x1 + (y - y1) / m;
+                    raster.getPixel((int) x, round(y), pixel);
                     pixel[0] = 0;
                     pixel[1] = 0;
                     pixel[2] = 0;
-                    raster.setPixel((int)x,round(y), pixel);
+                    raster.setPixel((int) x, round(y), pixel);
                 }
-            }else{
+            } else {
                 System.out.println("este é o 6 octante?");
                 for (y = y2; y <= y1; y++) {
                     x = x1 + (y - y1) / m;
@@ -166,17 +164,15 @@ public class CanetaMasterController implements Initializable {
         imgView.setImage(image);
 
     }
-    private int round(double num){
+
+    private int round(double num) {
         double parteNaoInteira = num % 1.0;
-        int numero = (int)num;
-        if(parteNaoInteira > 0.5){
+        int numero = (int) num;
+        if (parteNaoInteira > 0.5) {
             numero++;
         }
         return numero;
     }
-    
-
-    
 
     private void dda() {
         BufferedImage bimage = null;
@@ -187,7 +183,7 @@ public class CanetaMasterController implements Initializable {
         double dy = y2 - y1;
         double dx = x2 - x1;
 
-        double m = dy/dx;
+        double m = dy / dx;
         double x;
         double y;
         double xInc;
@@ -195,10 +191,10 @@ public class CanetaMasterController implements Initializable {
 
         double tamanho;
 
-        tamanho = Math.abs(x2-x1);
+        tamanho = Math.abs(x2 - x1);
         //aqui é pra saber se o tamanho vai ser definido pelo eixo x, ou pelo eixo y
-        if(Math.abs(y2-y1) > tamanho){
-            tamanho = Math.abs(y2-y1);
+        if (Math.abs(y2 - y1) > tamanho) {
+            tamanho = Math.abs(y2 - y1);
         }
         //a inversão de pontos é necessária para que todos os octantes sejam atingidos, pois o x inicial não pode ser maior que o final
         if (x1 > x2) {
@@ -210,15 +206,15 @@ public class CanetaMasterController implements Initializable {
             y2 = temp;
         }
 
-        xInc = (x2-x1)/tamanho;
-        yInc = (y2-y1)/tamanho;
+        xInc = (x2 - x1) / tamanho;
+        yInc = (y2 - y1) / tamanho;
         y = y1;
-        for(x = x1; x <= x2; x += xInc){
-            raster.getPixel((int)x, round(y), pixel);
+        for (x = x1; x <= x2; x += xInc) {
+            raster.getPixel((int) x, round(y), pixel);
             pixel[0] = 0;
             pixel[1] = 0;
             pixel[2] = 0;
-            raster.setPixel((int)x, round(y), pixel);
+            raster.setPixel((int) x, round(y), pixel);
             y += yInc;
         }
 
@@ -233,109 +229,275 @@ public class CanetaMasterController implements Initializable {
         int pixel[] = {0, 0, 0, 0};
         WritableRaster raster = bimage.getRaster();
 
-
-
-        if(y1>y2){
-            y1 = -y1;
-            y2 = -y2;
-        }
         double dy = y2 - y1;
         double dx = x2 - x1;
-        double m = dy/dx;
-        double x;
-        double y;
+        double m = dy / dx;
+        double x = x1;
+        double y = y1;
         double incE;
         double incNE;
         double d;
-        double xf;
-        int declive;
 
-        //constante de bresenhan
-        incE = 2 * dy;
-        incNE = 2 * dy - 2 * dx;
+        int ic, iy;
 
-        d = 2 * dy - dx;
-        y = y1;
-
-        if (dy >= 0) {
-            declive = 1;
-        } else {
-            declive = -1;
-        }
-        if (x1 > x2) {
-            x = x2;
-            y = y2;
-            xf = x1;
-        }
-        else{
-            x = x1;
-            y = y1;
-            xf = x2;
-        }
-
-        raster.getPixel((int)x, (int)y, pixel);
+        raster.getPixel((int) x, (int) y, pixel);
         pixel[0] = 0;
         pixel[1] = 0;
         pixel[2] = 0;
-        raster.setPixel((int)x, (int)y, pixel);
-        while(x<xf){
-            x++;
-            if(d<0){
-                d +=incE;
-            }
-            else{
-                y++;
-                d+=incNE;
-            }
-            raster.getPixel((int)x, (int)y, pixel);
-            pixel[0] = 0;
-            pixel[1] = 0;
-            pixel[2] = 0;
-            raster.setPixel((int)x, (int)y, pixel);
+        raster.setPixel((int) x, (int) y, pixel);
+
+        //constante de bresenhan
+        x = x1;
+        y = y1;
+
+        //seta delta x e o valor de incremento
+        if (dx < 0) {
+            dx = -dx;
+            ic = -1;
+        } else {
+            ic = 1;
+        }
+        //seta delta y e o valor de incremento
+        if (dy < 0) {
+            dy = -dy;
+            iy = -1;
+        } else {
+            iy = 1;
         }
 
+        //depois de manipular os deltas
+        if (dy < dx) {
+            incE = 2 * dy;
+            incNE = 2 * dy - 2 * dx;
 
-        /*if (Math.abs(dy) > Math.abs(dx)) {
-            if (y1 > y2) {
-                double temp = x1;
-                x1 = x2;
-                x2 = temp;
-                temp = y1;
-                y1 = y2;
-                y2 = temp;
-                this.retaMedio();
+            d = 2 * dy - dx;
+            for (double i = 0; i <= dx; i++) {
+                x = x + ic;
+                if (d < 0) {
+                    d += incE;
+                } else {
+                    d += incNE;
+                    y += iy;
+                }
+                raster.getPixel((int) x, (int) y, pixel);
+                pixel[0] = 0;
+                pixel[1] = 0;
+                pixel[2] = 0;
+                raster.setPixel((int) x, (int) y, pixel);
             }
 
         } else {
-            for (x = x1; x <= x2; x++) {
+            //aqui eu troco a constante para inverter os valores sem precisar chamar a recursão, o resultado é o mesmo
+            incE = 2 * dx;
+            incNE = 2 * dx - 2 * dy;
 
-                if (d <= 0) {
-                    d = d + incE;
+            d = 2 * dx - dy;
+
+            for (double i = 0; i <= dy; i++) {
+                y = y + iy;
+                if (d < 0) {
+                    d += incE;
                 } else {
-                    d = d + incNE;
-                    y = y + declive;
+                    d += incNE;
+                    x += ic;
                 }
+                raster.getPixel((int) x, (int) y, pixel);
+                pixel[0] = 0;
+                pixel[1] = 0;
+                pixel[2] = 0;
+                raster.setPixel((int) x, (int) y, pixel);
             }
-        }*/
+        }
+
+        image = SwingFXUtils.toFXImage(bimage, null);
+        imgView.setImage(image);
+
+    }
+
+    private void cirMedio() {
+        System.out.println("circunferencia ponto médio");
+        double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        double x = 0;
+        double y = raio;
+        double d = 1 - raio;
+        this.imprimeSimetrico((int) x, (int) y);
+        while (y > x) {
+            if (d < 0) {
+                d += 2 * x + 3;
+            } else {
+                d += 2 * (x - y) + 5;
+                y--;
+            }
+            x++;
+            this.imprimeSimetrico((int) x, (int) y);
+        }
+    }
+
+    private void cirReal() {
+        System.out.println("circunferência real");
+        double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        double x = 0;
+        double y = raio;
+        double d = 3 - 2 * raio;
+        while (x <= y) {
+            // imprimir pontos simétricos
+            imprimeSimetrico((int) x, (int) y);
+
+            // atualizar valores de x, y e d
+            if (d < 0) {
+                d = d + 4 * x + 6;
+            } else {
+                d = d + 4 * (x - y) + 10;
+                y--;
+            }
+            x++;
+        }
+    }
+
+    private void cirTrig() {
+        double centroX = (x1 + x2) / 2;
+        double centroY = (y1 + y2) / 2;
+        double deltaTheta = Math.PI / 180.0; // 1 degree in radians
+        int numSegments = (int) Math.ceil(2.0 * Math.PI / deltaTheta);
+        double dtheta = 2.0 * Math.PI / numSegments;
+        double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+        for (int i = 0; i < numSegments; i++) {
+            double theta = i * dtheta;
+            int x = (int) Math.round(centroX + raio * Math.cos(theta));
+            int y = (int) Math.round(centroY + raio * Math.sin(theta));
+            this.imprimeSimetrico(x, y);
+        }
+    }
+
+    private void elipse() {
+        double a = (x2 - x1) / 2;
+        double b = (y2 - y1) / 2;
+        double xc = (x1 + x2) / 2;
+        double yc = (y1 + y2) / 2;
+
+        double x = 0;
+        double y = b;
+        double d = b * b - a * a * b + a * a / 4;
+
+        while (b * b * (x + 1) < a * a * (y - 0.5)) {
+            imprimeElipse(xc + x, yc + y);
+            imprimeElipse(xc - x, yc + y);
+            imprimeElipse(xc + x, yc - y);
+            imprimeElipse(xc - x, yc - y);
+
+            x++;
+            if (d < 0) {
+                d = d + b * b * (2 * x + 3);
+            } else {
+                y--;
+                d = d + b * b * (2 * x + 3) + a * a * (-2 * y + 2);
+            }
+        }
+
+        d = b * b * (x + 0.5) * (x + 0.5) + a * a * (y - 1) * (y - 1) - a * a * b * b;
+        while (y > 0) {
+            imprimeElipse(xc + x, yc + y);
+            imprimeElipse(xc - x, yc + y);
+            imprimeElipse(xc + x, yc - y);
+            imprimeElipse(xc - x, yc - y);
+
+            y--;
+            if (d < 0) {
+                x++;
+                d = d + b * b * (2 * x + 2) + a * a * (-2 * y + 3);
+            } else {
+                d = d + a * a * (-2 * y + 3);
+            }
+        }
+
+    }
+
+    private void imprimeSimetrico(int x, int y) {
+
+        BufferedImage bimage = null;
+        bimage = SwingFXUtils.fromFXImage(image, null);
+        int pixel[] = {0, 0, 0, 0};
+        WritableRaster raster = bimage.getRaster();
+        System.out.println("x1 - " + x1 + " x - " + x);
+        System.out.println("y1 - " + y1 + " y - " + y);
+
+        
+        //1
+        raster.getPixel((int) (x1 + x), (int) (y1 + y), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 + x), (int) (y1 + y), pixel);
+
+        //2
+        raster.getPixel((int) (x1 + x), (int) (y1 - y), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 + x), (int) (y1 - y), pixel);
+
+        //3
+        raster.getPixel((int) (x1 - x), (int) (y1 + y), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 - x), (int) (y1 + y), pixel);
+
+        //4
+        raster.getPixel((int) (x1 - x), (int) (y1 - y), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 - x), (int) (y1 - y), pixel);
+
+        //5
+        raster.getPixel((int) (x1 + y), (int) (y1 + x), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 + y), (int) (y1 + x), pixel);
+
+        //6
+        raster.getPixel((int) (x1 + y), (int) (y1 - x), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 + y), (int) (y1 - x), pixel);
+
+        //7
+        raster.getPixel((int) (x1 - y), (int) (y1 + x), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 - y), (int) (y1 + x), pixel);
+
+        //8
+        raster.getPixel((int) (x1 - y), (int) (y1 - x), pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) (x1 - y), (int) (y1 - x), pixel);
 
         image = SwingFXUtils.toFXImage(bimage, null);
         imgView.setImage(image);
     }
 
-    private void cirMedio() {
-        System.out.println("circunferencia ponto médio");
-    }
+    public void imprimeElipse(double x, double y) {
 
-    private void cirReal() {
-        System.out.println("circunferência real");
-    }
+        BufferedImage bimage = null;
+        bimage = SwingFXUtils.fromFXImage(image, null);
+        int pixel[] = {0, 0, 0, 0};
+        WritableRaster raster = bimage.getRaster();
 
-    private void cirTrig() {
-        System.out.println("cricunferencia trigonométrico");
-    }
+        raster.getPixel((int) (x), (int) y, pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int) x, (int) y, pixel);
 
-    private void elipse() {
-        System.out.println("elipse ponto médio");
+        image = SwingFXUtils.toFXImage(bimage, null);
+        imgView.setImage(image);
     }
 
 }
