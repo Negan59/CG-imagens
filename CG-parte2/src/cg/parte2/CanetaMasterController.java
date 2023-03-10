@@ -5,6 +5,7 @@ import java.awt.image.WritableRaster;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.RadioButton;
@@ -479,6 +480,22 @@ public class CanetaMasterController implements Initializable {
         raster.setPixel((int) x, (int) y, pixel);
 
         image = SwingFXUtils.toFXImage(bimage, null);
+        imgView.setImage(image);
+    }
+
+    @FXML
+    private void evtLimparTela(ActionEvent event) {
+        int altura = 1200;
+        int largura = 768;
+
+        BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
+        int cor = 0xFFFFFFFF; // branco
+        for (int x = 0; x < largura; x++) {
+            for (int y = 0; y < altura; y++) {
+                imagem.setRGB(x, y, cor);
+            }
+        }
+        image = SwingFXUtils.toFXImage(imagem, null);
         imgView.setImage(image);
     }
 
