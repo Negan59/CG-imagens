@@ -60,6 +60,8 @@ public class CanetaMasterController implements Initializable {
         x2 = event.getX();
         y2 = event.getY();
 
+        System.out.println("x2 - "+x2+" y2 - "+y2);
+
         if (retaReal.isSelected()) {
             this.desenhaRetaReal();
         } else if (dda.isSelected()) {
@@ -81,6 +83,7 @@ public class CanetaMasterController implements Initializable {
     private void evtPegaXY(MouseEvent event) {
         x1 = event.getX();
         y1 = event.getY();
+        System.out.println("x1 - "+x1+" y1 - "+y1);
 
     }
 
@@ -92,35 +95,211 @@ public class CanetaMasterController implements Initializable {
         WritableRaster raster = bimage.getRaster();
         double dy = y2 - y1;
         double dx = x2 - x1;
-        double m = dy / dx;
-        double y = 0;
-        if (x2 > x1 && y2 > y1) {
-            for (double x = x1; x <= x2; x++) {
-                y = y1 + m * (x - x1);
-                raster.getPixel((int)x, (int)y, pixel);
-                pixel[0] = 0;
-                pixel[1] = 0;
-                pixel[2] = 0;
-                raster.setPixel((int)x,(int)y, pixel);
+        System.out.println("dx - "+dx);
+        System.out.println("dy - "+dy);
 
+        if (dx < 0) { // se dx é negativo, inverte a ordem dos pontos
+            double tmp = x1;
+            x1 = x2;
+            x2 = tmp;
+            tmp = y1;
+            y1 = y2;
+            y2 = tmp;
+            dx = -dx;
+            dy = -dy;
+        }
+
+        double m = dy / dx;
+        double y;
+        double x;
+
+        if(dx > dy) {
+            if(x2>x1){
+                //primeiro e oitavo octantes
+                for (x = x1; x <= x2; x++) {
+                    y = y1 + m * (x - x1);
+                    raster.getPixel((int) x, round(y), pixel);
+                    pixel[0] = 0;
+                    pixel[1] = 0;
+                    pixel[2] = 0;
+                    raster.setPixel((int) x, round(y), pixel);
+                }
             }
-            image = SwingFXUtils.toFXImage(bimage, null);
-            imgView.setImage(image);
+            else{
+                System.out.println("quarto e quinto octantes");
+                for(x=x2;x>=x1;x--){
+                    y = y1 + m * (x - x1);
+                    raster.getPixel((int) x, round(y), pixel);
+                    pixel[0] = 0;
+                    pixel[1] = 0;
+                    pixel[2] = 0;
+                    raster.setPixel((int) x, round(y), pixel);
+                }
+            }
+        }
+        else{
+            if(y2>y1){
+
+                for(y = y1;y<=y2;y++){
+                    x = x1 + (y - y1)/m;
+                    raster.getPixel((int)x, round(y), pixel);
+                    pixel[0] = 0;
+                    pixel[1] = 0;
+                    pixel[2] = 0;
+                    raster.setPixel((int)x,round(y), pixel);
+                }
+            }else{
+                System.out.println("este é o 6 octante?");
+                for (y = y2; y <= y1; y++) {
+                    x = x1 + (y - y1) / m;
+                    raster.getPixel((int) x, round(y), pixel);
+                    pixel[0] = 0;
+                    pixel[1] = 0;
+                    pixel[2] = 0;
+                    raster.setPixel((int) x, round(y), pixel);
+                }
+            }
 
         }
 
-    }
+        image = SwingFXUtils.toFXImage(bimage, null);
+        imgView.setImage(image);
 
+    }
+    private int round(double num){
+        double parteNaoInteira = num % 1.0;
+        int numero = (int)num;
+        if(parteNaoInteira > 0.5){
+            numero++;
+        }
+        return numero;
+    }
     
 
     
 
     private void dda() {
+        BufferedImage bimage = null;
+        bimage = SwingFXUtils.fromFXImage(image, null);
+        int pixel[] = {0, 0, 0, 0};
+        WritableRaster raster = bimage.getRaster();
         System.out.println("dda");
+        double dy = y2 - y1;
+        double dx = x2 - x1;
+
+        double m = dy/dx;
+        double x;
+        double y;
+        double xInc;
+        double yInc;
+
+        double tamanho;
+
+        tamanho = Math.abs(x2-x1);
+        //aqui é pra saber se o tamanho vai ser definido pelo eixo x, ou pelo eixo y
+        if(Math.abs(y2-y1) > tamanho){
+            tamanho = Math.abs(y2-y1);
+        }
+        //a inversão de pontos é necessária para que todos os octantes sejam atingidos, pois o x inicial não pode ser maior que o final
+        if (x1 > x2) {
+            double temp = x1;
+            x1 = x2;
+            x2 = temp;
+            temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
+
+        xInc = (x2-x1)/tamanho;
+        yInc = (y2-y1)/tamanho;
+        y = y1;
+        for(x = x1; x <= x2; x += xInc){
+            raster.getPixel((int)x, round(y), pixel);
+            pixel[0] = 0;
+            pixel[1] = 0;
+            pixel[2] = 0;
+            raster.setPixel((int)x, round(y), pixel);
+            y += yInc;
+        }
+
+        image = SwingFXUtils.toFXImage(bimage, null);
+        imgView.setImage(image);
     }
 
     private void retaMedio() {
         System.out.println("reta ponto médio");
+        BufferedImage bimage = null;
+        bimage = SwingFXUtils.fromFXImage(image, null);
+        int pixel[] = {0, 0, 0, 0};
+        WritableRaster raster = bimage.getRaster();
+
+
+        if (x1 > x2) {
+            double temp = x1;
+            x1 = x2;
+            x2 = temp;
+            temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
+        if(y1>y2){
+            y1 = -y1;
+            y2 = -y2;
+        }
+        double dy = y2 - y1;
+        double dx = x2 - x1;
+        double m = dy/dx;
+        double x;
+        double y;
+        double incE;
+        double incNE;
+        double d;
+        int declive;
+
+        //constante de bresenhan
+        incE = 2 * dy;
+        incNE = 2 * dy - 2 * dx;
+
+        d = 2 * dy - dx;
+        y = y1;
+
+        if (dy >= 0) {
+            declive = 1;
+        } else {
+            declive = -1;
+        }
+
+
+
+        if (Math.abs(dy) > Math.abs(dx)) {
+            if (y1 > y2) {
+                double temp = x1;
+                x1 = x2;
+                x2 = temp;
+                temp = y1;
+                y1 = y2;
+                y2 = temp;
+                this.retaMedio();
+            }
+
+        } else {
+            for (x = x1; x <= x2; x++) {
+                raster.getPixel((int)x, (int)y, pixel);
+                pixel[0] = 0;
+                pixel[1] = 0;
+                pixel[2] = 0;
+                raster.setPixel((int)x, (int)y, pixel);
+                if (d <= 0) {
+                    d = d + incE;
+                } else {
+                    d = d + incNE;
+                    y = y + declive;
+                }
+            }
+        }
+
+        image = SwingFXUtils.toFXImage(bimage, null);
+        imgView.setImage(image);
     }
 
     private void cirMedio() {
