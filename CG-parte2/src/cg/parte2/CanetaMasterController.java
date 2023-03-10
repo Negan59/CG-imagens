@@ -234,14 +234,7 @@ public class CanetaMasterController implements Initializable {
         WritableRaster raster = bimage.getRaster();
 
 
-        if (x1 > x2) {
-            double temp = x1;
-            x1 = x2;
-            x2 = temp;
-            temp = y1;
-            y1 = y2;
-            y2 = temp;
-        }
+
         if(y1>y2){
             y1 = -y1;
             y2 = -y2;
@@ -254,6 +247,7 @@ public class CanetaMasterController implements Initializable {
         double incE;
         double incNE;
         double d;
+        double xf;
         int declive;
 
         //constante de bresenhan
@@ -268,10 +262,40 @@ public class CanetaMasterController implements Initializable {
         } else {
             declive = -1;
         }
+        if (x1 > x2) {
+            x = x2;
+            y = y2;
+            xf = x1;
+        }
+        else{
+            x = x1;
+            y = y1;
+            xf = x2;
+        }
+
+        raster.getPixel((int)x, (int)y, pixel);
+        pixel[0] = 0;
+        pixel[1] = 0;
+        pixel[2] = 0;
+        raster.setPixel((int)x, (int)y, pixel);
+        while(x<xf){
+            x++;
+            if(d<0){
+                d +=incE;
+            }
+            else{
+                y++;
+                d+=incNE;
+            }
+            raster.getPixel((int)x, (int)y, pixel);
+            pixel[0] = 0;
+            pixel[1] = 0;
+            pixel[2] = 0;
+            raster.setPixel((int)x, (int)y, pixel);
+        }
 
 
-
-        if (Math.abs(dy) > Math.abs(dx)) {
+        /*if (Math.abs(dy) > Math.abs(dx)) {
             if (y1 > y2) {
                 double temp = x1;
                 x1 = x2;
@@ -284,11 +308,7 @@ public class CanetaMasterController implements Initializable {
 
         } else {
             for (x = x1; x <= x2; x++) {
-                raster.getPixel((int)x, (int)y, pixel);
-                pixel[0] = 0;
-                pixel[1] = 0;
-                pixel[2] = 0;
-                raster.setPixel((int)x, (int)y, pixel);
+
                 if (d <= 0) {
                     d = d + incE;
                 } else {
@@ -296,7 +316,7 @@ public class CanetaMasterController implements Initializable {
                     y = y + declive;
                 }
             }
-        }
+        }*/
 
         image = SwingFXUtils.toFXImage(bimage, null);
         imgView.setImage(image);
