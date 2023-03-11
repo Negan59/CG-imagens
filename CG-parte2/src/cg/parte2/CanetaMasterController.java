@@ -8,6 +8,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
@@ -32,12 +34,18 @@ public class CanetaMasterController implements Initializable {
     private RadioButton cirMedio;
     @FXML
     private RadioButton elipse;
+    
+    private int corR = 0;
+    private int corG = 0;
+    private int corB = 0;
 
     private double x1, x2, y1, y2;
     @FXML
     private ImageView imgView;
 
     private Image image;
+    @FXML
+    private ContextMenu ctxMenu;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -114,18 +122,18 @@ public class CanetaMasterController implements Initializable {
                 for (x = x1; x <= x2; x++) {
                     y = y1 + m * (x - x1);
                     raster.getPixel((int) x, round(y), pixel);
-                    pixel[0] = 0;
-                    pixel[1] = 0;
-                    pixel[2] = 0;
+                    pixel[0] = corR;
+                    pixel[1] = corG;
+                    pixel[2] = corB;
                     raster.setPixel((int) x, round(y), pixel);
                 }
             } else {
                 for (x = x2; x >= x1; x--) {
                     y = y1 + m * (x - x1);
                     raster.getPixel((int) x, round(y), pixel);
-                    pixel[0] = 0;
-                    pixel[1] = 0;
-                    pixel[2] = 0;
+                    pixel[0] = corR;
+                    pixel[1] = corG;
+                    pixel[2] = corB;
                     raster.setPixel((int) x, round(y), pixel);
                 }
             }
@@ -135,18 +143,18 @@ public class CanetaMasterController implements Initializable {
                 for (y = y1; y <= y2; y++) {
                     x = x1 + (y - y1) / m;
                     raster.getPixel((int) x, round(y), pixel);
-                    pixel[0] = 0;
-                    pixel[1] = 0;
-                    pixel[2] = 0;
+                    pixel[0] = corR;
+                    pixel[1] = corG;
+                    pixel[2] = corB;
                     raster.setPixel((int) x, round(y), pixel);
                 }
             } else {
                 for (y = y2; y <= y1; y++) {
                     x = x1 + (y - y1) / m;
                     raster.getPixel((int) x, round(y), pixel);
-                    pixel[0] = 0;
-                    pixel[1] = 0;
-                    pixel[2] = 0;
+                    pixel[0] = corR;
+                    pixel[1] = corG;
+                    pixel[2] = corB;
                     raster.setPixel((int) x, round(y), pixel);
                 }
             }
@@ -203,9 +211,9 @@ public class CanetaMasterController implements Initializable {
         y = y1;
         for (x = x1; x <= x2; x += xInc) {
             raster.getPixel((int) x, round(y), pixel);
-            pixel[0] = 0;
-            pixel[1] = 0;
-            pixel[2] = 0;
+            pixel[0] = corR;
+            pixel[1] = corG;
+            pixel[2] = corB;
             raster.setPixel((int) x, round(y), pixel);
             y += yInc;
         }
@@ -232,9 +240,9 @@ public class CanetaMasterController implements Initializable {
         int ic, iy;
 
         raster.getPixel((int) x, (int) y, pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) x, (int) y, pixel);
 
         //constante de bresenhan
@@ -271,9 +279,9 @@ public class CanetaMasterController implements Initializable {
                     y += iy;
                 }
                 raster.getPixel((int) x, (int) y, pixel);
-                pixel[0] = 0;
-                pixel[1] = 0;
-                pixel[2] = 0;
+                pixel[0] = corR;
+                pixel[1] = corG;
+                pixel[2] = corB;
                 raster.setPixel((int) x, (int) y, pixel);
             }
 
@@ -293,9 +301,9 @@ public class CanetaMasterController implements Initializable {
                     x += ic;
                 }
                 raster.getPixel((int) x, (int) y, pixel);
-                pixel[0] = 0;
-                pixel[1] = 0;
-                pixel[2] = 0;
+                pixel[0] = corR;
+                pixel[1] = corG;
+                pixel[2] = corB;
                 raster.setPixel((int) x, (int) y, pixel);
             }
         }
@@ -348,8 +356,8 @@ public class CanetaMasterController implements Initializable {
         int numSegments = (int) Math.ceil(2.0 * Math.PI / deltaTheta);
         double dtheta = 2.0 * Math.PI / numSegments;
         double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
-        for (int i = 0; i < numSegments; i++) {
+        //é 45, porque um octante é espelhado nos outos
+        for (int i = 0; i < 45; i++) {
             double theta = i * dtheta;
             double x = raio*Math.cos(theta);
             double y = raio*Math.sin(theta);
@@ -366,7 +374,7 @@ public class CanetaMasterController implements Initializable {
         double x = 0;
         double y = b;
         double d = b * b - a * a * b + a * a / 4;
-
+        //1 lado
         while (b * b * (x + 1) < a * a * (y - 0.5)) {
             imprimeElipse(xc + x, yc + y);
             imprimeElipse(xc - x, yc + y);
@@ -381,7 +389,7 @@ public class CanetaMasterController implements Initializable {
                 d = d + b * b * (2 * x + 3) + a * a * (-2 * y + 2);
             }
         }
-
+        //2 lado
         d = b * b * (x + 0.5) * (x + 0.5) + a * a * (y - 1) * (y - 1) - a * a * b * b;
         while (y > 0) {
             imprimeElipse(xc + x, yc + y);
@@ -408,58 +416,58 @@ public class CanetaMasterController implements Initializable {
         WritableRaster raster = bimage.getRaster();
         //1
         raster.getPixel((int) (x1 + x), (int) (y1 + y), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 + x), (int) (y1 + y), pixel);
 
         //2
         raster.getPixel((int) (x1 + x), (int) (y1 - y), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 + x), (int) (y1 - y), pixel);
 
         //3
         raster.getPixel((int) (x1 - x), (int) (y1 + y), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 - x), (int) (y1 + y), pixel);
 
         //4
         raster.getPixel((int) (x1 - x), (int) (y1 - y), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 - x), (int) (y1 - y), pixel);
 
         //5
         raster.getPixel((int) (x1 + y), (int) (y1 + x), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 + y), (int) (y1 + x), pixel);
 
         //6
         raster.getPixel((int) (x1 + y), (int) (y1 - x), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 + y), (int) (y1 - x), pixel);
 
         //7
         raster.getPixel((int) (x1 - y), (int) (y1 + x), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 - y), (int) (y1 + x), pixel);
 
         //8
         raster.getPixel((int) (x1 - y), (int) (y1 - x), pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) (x1 - y), (int) (y1 - x), pixel);
 
         image = SwingFXUtils.toFXImage(bimage, null);
@@ -474,9 +482,9 @@ public class CanetaMasterController implements Initializable {
         WritableRaster raster = bimage.getRaster();
 
         raster.getPixel((int) (x), (int) y, pixel);
-        pixel[0] = 0;
-        pixel[1] = 0;
-        pixel[2] = 0;
+        pixel[0] = corR;
+        pixel[1] = corG;
+        pixel[2] = corB;
         raster.setPixel((int) x, (int) y, pixel);
 
         image = SwingFXUtils.toFXImage(bimage, null);
@@ -497,6 +505,34 @@ public class CanetaMasterController implements Initializable {
         }
         image = SwingFXUtils.toFXImage(imagem, null);
         imgView.setImage(image);
+    }
+
+    @FXML
+    private void evtPreto(ActionEvent event) {
+        corR = 0;
+        corG = 0;
+        corB = 0;
+    }
+
+    @FXML
+    private void evtvermelho(ActionEvent event) {
+        corR = 255;
+        corG = 0;
+        corB = 0;
+    }
+
+    @FXML
+    private void evtAzul(ActionEvent event) {
+        corR = 0;
+        corG = 0;
+        corB = 255;
+    }
+
+    @FXML
+    private void evtRosa(ActionEvent event) {
+        corR = 255;
+        corG = 0;
+        corB = 203;
     }
 
 }
