@@ -355,13 +355,16 @@ public class CanetaMasterController implements Initializable {
     }
 
     private void cirTrig() {
-        double deltaTheta =  Math.PI / 90;
+        double deltaTheta =  0;
+        
         double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        double inc = 360.0/(2 * Math.PI*raio);
+        System.out.println("inc - "+inc);
         //é 45, porque um octante é espelhado nos outos
-        for (int i = 0; i < 45; i++) {
-            double theta = i * deltaTheta ;
-            double x = raio*Math.cos(theta);
-            double y = raio*Math.sin(theta);
+        for (double i = 0; i <= 45; i += inc) {
+            deltaTheta = Math.PI*i/180.0;
+            double x = raio*Math.cos(deltaTheta);
+            double y = raio*Math.sin(deltaTheta);
             this.imprimeSimetrico((int)x, (int)y);
         }
     }
