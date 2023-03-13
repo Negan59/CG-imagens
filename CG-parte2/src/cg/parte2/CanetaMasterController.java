@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -46,6 +47,8 @@ public class CanetaMasterController implements Initializable {
     private Image image;
     @FXML
     private ContextMenu ctxMenu;
+    @FXML
+    private TableView<?> tabPontos;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -352,13 +355,11 @@ public class CanetaMasterController implements Initializable {
     }
 
     private void cirTrig() {
-        double deltaTheta = Math.PI / 180.0; // 1 degree in radians
-        int numSegments = (int) Math.ceil(2.0 * Math.PI / deltaTheta);
-        double dtheta = 2.0 * Math.PI / numSegments;
+        double deltaTheta =  Math.PI / 90;
         double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         //é 45, porque um octante é espelhado nos outos
         for (int i = 0; i < 45; i++) {
-            double theta = i * dtheta;
+            double theta = i * deltaTheta ;
             double x = raio*Math.cos(theta);
             double y = raio*Math.sin(theta);
             this.imprimeSimetrico((int)x, (int)y);
@@ -533,6 +534,10 @@ public class CanetaMasterController implements Initializable {
         corR = 255;
         corG = 0;
         corB = 203;
+    }
+
+    @FXML
+    private void evtCriaPoligono(ActionEvent event) {
     }
 
 }

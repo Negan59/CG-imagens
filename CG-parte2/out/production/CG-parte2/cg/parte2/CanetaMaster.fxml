@@ -2,16 +2,20 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cg.parte2.CanetaMasterController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="827.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cg.parte2.CanetaMasterController">
    <right>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -106,6 +110,41 @@
          <content>
             <ImageView fx:id="imgView" onMousePressed="#evtPegaXY" onMouseReleased="#evtPegaXYFinal" pickOnBounds="true" preserveRatio="true" />
          </content>
+         <contextMenu>
+            <ContextMenu fx:id="ctxMenu">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#evtPreto" text="Preto" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtvermelho" text="Vermelho" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtAzul" text="Azul" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtRosa" text="Rosa" />
+              </items>
+            </ContextMenu>
+         </contextMenu>
       </ScrollPane>
    </center>
+   <left>
+      <VBox alignment="CENTER" prefHeight="520.0" prefWidth="151.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label style="-fx-font-weight: bold;" text="Poligono">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#evtCriaPoligono" style="-fx-background-color: green;" text="+" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="6.0" top="5.0" />
+               </VBox.margin>
+            </Button>
+            <TableView fx:id="tabPontos" prefHeight="200.0" prefWidth="134.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="X" />
+                <TableColumn prefWidth="75.0" text="Y" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </left>
 </BorderPane>
