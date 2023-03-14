@@ -3,6 +3,7 @@ package cg.parte2;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -49,6 +50,12 @@ public class CanetaMasterController implements Initializable {
     private ContextMenu ctxMenu;
     @FXML
     private TableView<?> tabPontos;
+    
+    private boolean poligono = false;
+    
+    private ArrayList<Poligono> poligonos = new ArrayList();
+    
+    private Poligono p;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -93,6 +100,20 @@ public class CanetaMasterController implements Initializable {
     private void evtPegaXY(MouseEvent event) {
         x1 = event.getX();
         y1 = event.getY();
+        
+        if(poligono){
+            p.getOriginal().add(new Pontos(x1,y1));
+        }
+        
+        if(event.getClickCount() == 2){
+            if(p.getOriginal().size() > 2){
+                for(int i = 0;i<p.getOriginal().size();i++){
+                    x1 = p.getOriginal().get(i).getX();
+                    y1 = p.getOriginal().get(i).getY();
+                    this.retaMedio();
+                }
+            }
+        }
 
     }
 
@@ -541,6 +562,8 @@ public class CanetaMasterController implements Initializable {
 
     @FXML
     private void evtCriaPoligono(ActionEvent event) {
+        poligono = true;
+        p = new Poligono();
     }
 
 }
