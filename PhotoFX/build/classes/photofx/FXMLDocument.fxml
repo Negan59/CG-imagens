@@ -91,7 +91,7 @@
    <center>
       <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <content>
-            <ImageView fx:id="imagemView" fitHeight="222.0" fitWidth="298.0" onMouseDragged="#evtMouseArrasta" onMouseMoved="#evtPegaCor" onMousePressed="#evtMousePressionado" onMouseReleased="#evtMouseSolta" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imagemView" fitHeight="222.0" fitWidth="298.0" onMouseDragged="#evtMouseArrasta" onMouseMoved="#evtPegaCor" pickOnBounds="true" preserveRatio="true" />
          </content>
       </ScrollPane>
    </center>

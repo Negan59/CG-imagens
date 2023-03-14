@@ -47,13 +47,13 @@
                 </Menu>
                 <Menu fx:id="tfImagens" disable="true" mnemonicParsing="false" text="Imagens" visible="false">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#evtTonsCinza" text="Tons de cinza" />
+                    <MenuItem mnemonicParsing="false" onAction="#evtTonsCinza" text="Luminancia" />
                   </items>
                 </Menu>
                   <Menu fx:id="tfBinario" disable="true" mnemonicParsing="false" text="Binarização" visible="false">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#evtBinarizacaoManual" text="manual" />
-                        <MenuItem mnemonicParsing="false" onAction="#evtBinarizacaoOtsu" text="otsu" />
+                      <MenuItem mnemonicParsing="false" onAction="#evtBinarizacaoManual" text="Manual" />
+                        <MenuItem mnemonicParsing="false" onAction="#evtBinarizacaoOtsu" text="Otsu" />
                     </items>
                   </Menu>
                   <Menu fx:id="tfHistograma" disable="true" mnemonicParsing="false" text="Histograma" visible="false">
@@ -61,31 +61,6 @@
                       <MenuItem mnemonicParsing="false" onAction="#gerarHistograma" text="Gerar histograma" />
                         <MenuItem mnemonicParsing="false" onAction="#equalizarHistograma" text="Equalizar histograma" />
                     </items>
-                  </Menu>
-                <Menu mnemonicParsing="false" text="Ajuda">
-                  <items>
-                    <MenuItem fx:id="opSobre" mnemonicParsing="false" onAction="#evtSobre" text="Sobre" />
-                  </items>
-                </Menu>
-                  <Menu fx:id="optCaneta" disable="true" mnemonicParsing="false" text="Opções caneta" visible="false">
-                     <items>
-                        <Menu mnemonicParsing="false" text="Tipo">
-                          <items>
-                            <MenuItem mnemonicParsing="false" onAction="#optCanetaLivre" text="Livre" />
-                              <MenuItem mnemonicParsing="false" onAction="#optCanetaReta" text="Reta" />
-                              <MenuItem mnemonicParsing="false" onAction="#optPinta" text="Pincel" />
-                              <MenuItem mnemonicParsing="false" onAction="#optQuadrado" text="Quadrado" />
-                          </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Cor">
-                          <items>
-                            <MenuItem mnemonicParsing="false" onAction="#evtCorAmarelo" text="Amarelo" />
-                              <MenuItem mnemonicParsing="false" onAction="#evtCorAzul" text="Azul" />
-                              <MenuItem mnemonicParsing="false" onAction="#evtCorVerde" text="Verde" />
-                              <MenuItem mnemonicParsing="false" onAction="#evtCorVermelho" text="Vermelho" />
-                          </items>
-                        </Menu>
-                     </items>
                   </Menu>
               </menus>
             </MenuBar>
@@ -105,11 +80,6 @@
                         <Font name="Comic Sans MS" size="16.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCaneta" disable="true" layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#evtCaneta" style="-fx-background-color: purple;" text="Caneta" textFill="WHITE">
-                     <font>
-                        <Font name="Comic Sans MS" size="16.0" />
-                     </font>
-                  </Button>
                   <TextField fx:id="txBinarizar" prefHeight="25.0" prefWidth="67.0" visible="false" />
                   <Button fx:id="btnBinarizar" mnemonicParsing="false" onAction="#evtBinarizarManual" text="Binarizar" visible="false" />
                   <Slider fx:id="sldTamanhoPincel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" min="1.0" prefHeight="43.0" prefWidth="170.0" style="-fx-background-color: red;" value="1.0" visible="false" />
@@ -121,7 +91,7 @@
    <center>
       <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <content>
-            <ImageView fx:id="imagemView" fitHeight="222.0" fitWidth="298.0" onMouseDragged="#evtMouseArrasta" onMouseMoved="#evtPegaCor" onMousePressed="#evtMousePressionado" onMouseReleased="#evtMouseSolta" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imagemView" fitHeight="222.0" fitWidth="298.0" onMouseDragged="#evtMouseArrasta" onMouseMoved="#evtPegaCor" pickOnBounds="true" preserveRatio="true" />
          </content>
       </ScrollPane>
    </center>

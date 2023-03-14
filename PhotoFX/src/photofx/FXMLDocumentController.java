@@ -298,40 +298,6 @@ public class FXMLDocumentController implements Initializable {
         modified = true;
 
     }
-    //inicio das funções usando imageJ
-
-    private void evtSobre(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Sobre");
-        alert.setHeaderText("Nome: Guilherme Lucas de Oliveira R.A:102012130\nNome: Lucas Yugo Suyama R.A:101911335");
-        alert.setContentText("Aplicativo criado para manipulação de imagens\nFunções manuais:\nEscala de cinza(desenvolvida em aula)\nPreto e branco\nNegativo\nEspelho vertical\nEspelho horizontal");
-        alert.showAndWait();
-    }
-
-    //teste, ainda não faz parte do produto final
-    private void evtCaneta(ActionEvent event) {
-        if (!canetaAtiva) {
-            canetaAtiva = true;
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Caneta");
-            alert.setHeaderText("a caneta está ativa!!!");
-            alert.showAndWait();
-            optCaneta.setDisable(false);
-            optCaneta.setVisible(true);
-        } else {
-            canetaAtiva = false;
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Caneta");
-            alert.setHeaderText("a caneta não esrá mais ativa!!!");
-            alert.showAndWait();
-            optCaneta.setDisable(true);
-            optCaneta.setVisible(false);
-            tipo = false;
-            pinta = false;
-            quadrado = false;
-            sldTamanhoPincel.setVisible(false);
-        }
-    }
 
     @FXML
     private void evtMouseArrasta(MouseEvent event) {
@@ -361,39 +327,6 @@ public class FXMLDocumentController implements Initializable {
             modified = true;
         }
 
-    }
-
-    @FXML
-    private void evtMousePressionado(MouseEvent event) {
-        if (canetaAtiva) {
-            x1 = (int) event.getX();
-            y1 = (int) event.getY();
-        }
-    }
-
-    private void evtCorAmarelo(ActionEvent event) {
-        corsel = Color.YELLOW;
-    }
-
-    private void evtCorAzul(ActionEvent event) {
-        corsel = Color.BLUE;
-    }
-
-    private void evtCorVerde(ActionEvent event) {
-        corsel = Color.GREEN;
-        //graph.setColor(Color.GREEN);
-    }
-
-    private void evtCorVermelho(ActionEvent event) {
-        corsel = Color.RED;
-    }
-
-    private void optCanetaLivre(ActionEvent event) {
-        tipo = false;
-    }
-
-    private void optCanetaReta(ActionEvent event) {
-        tipo = true;
     }
 
     @FXML
@@ -470,25 +403,25 @@ public class FXMLDocumentController implements Initializable {
             x = (i * (1 - s));
             y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
             z = 3 * i - (x + y);
-            rgb[0] = (y > 1)? (int)(y * 255):255;
-            rgb[1] = (z > 1)? (int)(z * 255):255;
-            rgb[2] = (x > 1)? (int)(x * 255):255;
+            rgb[0] = (int) (y * 255);
+            rgb[1] = (int) (z * 255);
+            rgb[2] = (int) (x * 255);
         } else if (((2 * Math.PI) / 3) <= h && h < ((4 * Math.PI) / 3)) {
             h = h - ((2 * Math.PI) / 3);
             x = (i * (1 - s));
             y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
             z = 3 * i - (x + y);
-            rgb[0] = (x > 1)? (int)(x * 255):255;
-            rgb[1] = (y > 1)? (int)(y * 255):255;
-            rgb[2] = (z > 1)? (int)(z * 255):255;
+            rgb[0] = (int) (x * 255);
+            rgb[1] = (int) (y * 255);
+            rgb[2] = (int) (z * 255);
         } else {
             h = h - ((4 * Math.PI) / 3);
             x = (i * (1 - s));
             y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
             z = 3 * i - (x + y);
-            rgb[0] = (z > 1)? (int)(z * 255):255;
-            rgb[1] = (x > 1)? (int)(x * 255):255;
-            rgb[2] = (y > 1)? (int)(y * 255):255;
+            rgb[0] = (int) (z * 255);
+            rgb[1] = (int) (x * 255);
+            rgb[2] = (int) (y * 255);
         }
 
         return rgb;
@@ -527,9 +460,9 @@ public class FXMLDocumentController implements Initializable {
                         aux.setI(obj[y][x].getI());
                     }
                     vet = this.converteHSIparaRGB(aux.getH(), aux.getS(), aux.getI());
-                    pixel[0] = vet[0];
-                    pixel[1] = vet[1];
-                    pixel[2] = vet[2];
+                    pixel[0] = (vet[0]>255)?255:vet[0];
+                    pixel[1] = (vet[1]>255)?255:vet[1];
+                    pixel[2] = (vet[2]>255)?255:vet[2];
                     raster.setPixel(x, y, pixel);
                 }
             }
@@ -729,7 +662,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void gerarHistograma(ActionEvent event) {
 
-        if(valor){
+        if (valor) {
             this.evtTonsCinza(event);
             manipula();
             valor = false;
@@ -740,7 +673,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void equalizarHistograma(ActionEvent event) {
 
-        if(eqHist){
+        if (eqHist) {
             double altura = image.getHeight();
             double largura = image.getWidth();
 
