@@ -5,6 +5,7 @@ import java.awt.image.WritableRaster;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,11 +13,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 
 public class CanetaMasterController implements Initializable {
 
@@ -36,7 +40,7 @@ public class CanetaMasterController implements Initializable {
     private RadioButton cirMedio;
     @FXML
     private RadioButton elipse;
-    
+
     private int corR = 0;
     private int corG = 0;
     private int corB = 0;
@@ -48,14 +52,14 @@ public class CanetaMasterController implements Initializable {
     private Image image;
     @FXML
     private ContextMenu ctxMenu;
-    @FXML
-    private TableView<?> tabPontos;
-    
+
     private boolean poligono = false;
-    
+
     private ArrayList<Poligono> poligonos = new ArrayList();
-    
+
     private Poligono p;
+    @FXML
+    private VBox vboxEsquerda;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -100,18 +104,39 @@ public class CanetaMasterController implements Initializable {
     private void evtPegaXY(MouseEvent event) {
         x1 = event.getX();
         y1 = event.getY();
-        
-        if(poligono){
-            p.getOriginal().add(new Pontos(x1,y1));
-        }
-        
-        if(event.getClickCount() == 2){
-            if(p.getOriginal().size() > 2){
-                for(int i = 0;i<p.getOriginal().size();i++){
-                    x1 = p.getOriginal().get(i).getX();
-                    y1 = p.getOriginal().get(i).getY();
+
+        if (poligono) {
+            p.getOriginal().add(new Pontos(x1, y1));
+
+            int i;
+            if (event.getClickCount() == 2) {
+                TableView<Pontos> tabela = new TableView<>();
+                TableColumn<Pontos, Double> colunaNome = new TableColumn<>("X");
+                colunaNome.setCellValueFactory(new PropertyValueFactory<>("x"));
+
+                TableColumn<Pontos, Integer> colunaIdade = new TableColumn<>("Y");
+                colunaIdade.setCellValueFactory(new PropertyValueFactory<>("y"));
+
+                tabela.getColumns().add(colunaNome);
+                tabela.getColumns().add(colunaIdade);
+
+                tabela.setItems(FXCollections.observableArrayList(p.getOriginal()));
+                if (p.getOriginal().size() > 2) {
+                    for (i = 0; i < p.getOriginal().size() - 1; i++) {
+                        x1 = p.getOriginal().get(i).getX();
+                        y1 = p.getOriginal().get(i).getY();
+                        x2 = p.getOriginal().get(i + 1).getX();
+                        y2 = p.getOriginal().get(i + 1).getY();
+                        this.retaMedio();
+                    }
+                    x1 = p.getOriginal().get(0).getX();
+                    y1 = p.getOriginal().get(0).getY();
+                    x2 = p.getOriginal().get(i).getX();
+                    y2 = p.getOriginal().get(i).getY();
                     this.retaMedio();
                 }
+                poligono = false;
+                vboxEsquerda.getChildren().add(tabela);
             }
         }
 
@@ -376,17 +401,17 @@ public class CanetaMasterController implements Initializable {
     }
 
     private void cirTrig() {
-        double deltaTheta =  0;
-        
+        double deltaTheta = 0;
+
         double raio = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-        double inc = 360.0/(2 * Math.PI*raio);
-        System.out.println("inc - "+inc);
+        double inc = 360.0 / (2 * Math.PI * raio);
+        System.out.println("inc - " + inc);
         //é 45, porque um octante é espelhado nos outos
         for (double i = 0; i <= 45; i += inc) {
-            deltaTheta = Math.PI*i/180.0;
-            double x = raio*Math.cos(deltaTheta);
-            double y = raio*Math.sin(deltaTheta);
-            this.imprimeSimetrico((int)x, (int)y);
+            deltaTheta = Math.PI * i / 180.0;
+            double x = raio * Math.cos(deltaTheta);
+            double y = raio * Math.sin(deltaTheta);
+            this.imprimeSimetrico((int) x, (int) y);
         }
     }
 
