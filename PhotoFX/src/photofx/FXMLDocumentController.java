@@ -60,14 +60,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Menu tfImagens;
     @FXML
-    private MenuItem opSobre;
-    @FXML
     private Button btnSalvar;
     @FXML
     private Button btnSalvarComo;
-    @FXML
     private Menu optCaneta;
-    @FXML
     private Button btnCaneta;
     @FXML
     private Slider sldTamanhoPincel;
@@ -106,13 +102,25 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private VBox vboxEsquerda;
 
+    private boolean flagEq;
+    private boolean valor;
+    private boolean eqHist;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         graficoHisto.setVisible(false);
+
     }
 
     @FXML
     private void evtAbrir(ActionEvent event) {
+        for (int i = 0; i < 256; i++) {
+            vetor[i] = 0;
+        }
+        valor = true;
+        eqHist = true;
+        flagEq = false;
+        tfBinario.setDisable(true);
         graficoHisto.setVisible(false);
         if (!graficoHisto.getData().isEmpty()) {
             graficoHisto.getData().clear();
@@ -139,7 +147,7 @@ public class FXMLDocumentController implements Initializable {
             tfImagens.setVisible(true);
             tfImagens.setDisable(false);
             tfBinario.setVisible(true);
-            tfBinario.setDisable(false);
+            //tfBinario.setDisable(false);
             tfHistograma.setVisible(true);
             tfHistograma.setDisable(false);
             vboxEsquerda.setVisible(true);
@@ -147,7 +155,7 @@ public class FXMLDocumentController implements Initializable {
             btnSalvarComo.setVisible(true);
             btnSalvar.setDisable(false);
             btnSalvar.setVisible(true);
-            btnCaneta.setDisable(false);
+            //btnCaneta.setDisable(false);
 //            graph = bImage.createGraphics();
         }
         System.out.println("altura = " + image.getHeight());
@@ -276,7 +284,7 @@ public class FXMLDocumentController implements Initializable {
             for (int y = 0; y < image.getHeight(); y++) {
                 for (int x = 0; x < image.getWidth(); x++) {
                     raster.getPixel(x, y, pixel);
-                    media = (int) ((pixel[0] * 0.299 + pixel[1] * 0.587 + pixel[2] * 0.114) / 3);
+                    media = (int) ((pixel[0] * 0.299 + pixel[1] * 0.587 + pixel[2] * 0.114));
                     pixel[0] = media;
                     pixel[1] = media;
                     pixel[2] = media;
@@ -292,7 +300,6 @@ public class FXMLDocumentController implements Initializable {
     }
     //inicio das funções usando imageJ
 
-    @FXML
     private void evtSobre(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Sobre");
@@ -302,7 +309,6 @@ public class FXMLDocumentController implements Initializable {
     }
 
     //teste, ainda não faz parte do produto final
-    @FXML
     private void evtCaneta(ActionEvent event) {
         if (!canetaAtiva) {
             canetaAtiva = true;
@@ -365,33 +371,27 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
-    @FXML
     private void evtCorAmarelo(ActionEvent event) {
         corsel = Color.YELLOW;
     }
 
-    @FXML
     private void evtCorAzul(ActionEvent event) {
         corsel = Color.BLUE;
     }
 
-    @FXML
     private void evtCorVerde(ActionEvent event) {
         corsel = Color.GREEN;
         //graph.setColor(Color.GREEN);
     }
 
-    @FXML
     private void evtCorVermelho(ActionEvent event) {
         corsel = Color.RED;
     }
 
-    @FXML
     private void optCanetaLivre(ActionEvent event) {
         tipo = false;
     }
 
-    @FXML
     private void optCanetaReta(ActionEvent event) {
         tipo = true;
     }
@@ -421,13 +421,11 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
-    @FXML
     private void optPinta(ActionEvent event) {
         sldTamanhoPincel.setVisible(true);
         pinta = true;
     }
 
-    @FXML
     private void optQuadrado(ActionEvent event) {
         quadrado = true;
     }
@@ -472,25 +470,25 @@ public class FXMLDocumentController implements Initializable {
             x = (i * (1 - s));
             y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
             z = 3 * i - (x + y);
-            rgb[0] = (int) (y * 255);
-            rgb[1] = (int) (z * 255);
-            rgb[2] = (int) (x * 255);
+            rgb[0] = (y > 1)? (int)(y * 255):255;
+            rgb[1] = (z > 1)? (int)(z * 255):255;
+            rgb[2] = (x > 1)? (int)(x * 255):255;
         } else if (((2 * Math.PI) / 3) <= h && h < ((4 * Math.PI) / 3)) {
             h = h - ((2 * Math.PI) / 3);
             x = (i * (1 - s));
             y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
             z = 3 * i - (x + y);
-            rgb[0] = (int) (x * 255);
-            rgb[1] = (int) (y * 255);
-            rgb[2] = (int) (z * 255);
+            rgb[0] = (x > 1)? (int)(x * 255):255;
+            rgb[1] = (y > 1)? (int)(y * 255):255;
+            rgb[2] = (z > 1)? (int)(z * 255):255;
         } else {
             h = h - ((4 * Math.PI) / 3);
             x = (i * (1 - s));
             y = i * (1 + (s * Math.cos(h)) / (Math.cos(Math.PI / 3 - h)));
             z = 3 * i - (x + y);
-            rgb[0] = (int) (z * 255);
-            rgb[1] = (int) (x * 255);
-            rgb[2] = (int) (y * 255);
+            rgb[0] = (z > 1)? (int)(z * 255):255;
+            rgb[1] = (x > 1)? (int)(x * 255):255;
+            rgb[2] = (y > 1)? (int)(y * 255):255;
         }
 
         return rgb;
@@ -650,26 +648,28 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtBinarizacaoOtsu(ActionEvent event) {
+        txBinarizar.setVisible(true);
+        btnBinarizar.setVisible(true);
         double altura = image.getHeight();
         double largura = image.getWidth();
         //arruma vetor - num/M*N
         double vetorN[] = new double[256];
-        for(int i = 0;i<256;i++){
-            vetorN[i] = vetor[i]/(altura*largura);
+        for (int i = 0; i < 256; i++) {
+            vetorN[i] = vetor[i] / (altura * largura);
         }
-        
+
         //media global
         double mediaGlobal = 0;
-        for(int i = 0;i<256;i++){
-            mediaGlobal+=i*vetorN[i];
+        for (int i = 0; i < 256; i++) {
+            mediaGlobal += i * vetorN[i];
         }
-        
+
         //variância global
         double varianciaGlobal = 0;
-        for(int i = 0;i<256;i++){
-            mediaGlobal+=Math.pow(i-mediaGlobal, 2) * vetorN[i];
+        for (int i = 0; i < 256; i++) {
+            mediaGlobal += Math.pow(i - mediaGlobal, 2) * vetorN[i];
         }
-        
+
         //encontrar valor ótimo
         int threshold = 0;
         double maxVariance = 0;
@@ -684,13 +684,13 @@ public class FXMLDocumentController implements Initializable {
                 continue;
             }
 
-            double p = (double) count / (altura*largura);
+            double p = (double) count / (altura * largura);
             double q = 1 - p;
 
             sumB += i * vetorN[i];
 
             double meanB = sumB / count;
-            double meanF = (sum - sumB) / ((altura*largura) - count);
+            double meanF = (sum - sumB) / ((altura * largura) - count);
 
             double betweenClassVariance = p * q * Math.pow(meanB - meanF, 2);
 
@@ -699,9 +699,11 @@ public class FXMLDocumentController implements Initializable {
                 threshold = i;
             }
         }
-        txBinarizar.setText(""+threshold);
+        txBinarizar.setText("" + threshold);
     }
-    public void manipula(){
+
+    public void manipula() {
+
         if (image != null) {
             bImage = SwingFXUtils.fromFXImage(image, null);
             int pixel[] = {0, 0, 0, 0};
@@ -714,51 +716,56 @@ public class FXMLDocumentController implements Initializable {
             }
 
         }
-        XYChart.Series escala = new XYChart.Series();
-        for (int i = 0; i < 256; i++) {
-            escala.getData().add(new XYChart.Data("" + i, vetor[i]));
+        if (!flagEq) {
+            XYChart.Series escala = new XYChart.Series();
+            for (int i = 0; i < 256; i++) {
+                escala.getData().add(new XYChart.Data("" + i, vetor[i]));
+            }
+            graficoHisto.getData().add(escala);
+            graficoHisto.setVisible(true);
         }
-        graficoHisto.getData().add(escala);
-        graficoHisto.setVisible(true);
     }
+
     @FXML
     private void gerarHistograma(ActionEvent event) {
-        for(int i = 0;i<256;i++){
-            vetor[i] = 0;
+
+        if(valor){
+            this.evtTonsCinza(event);
+            manipula();
+            valor = false;
+            tfBinario.setDisable(false);
         }
-        this.evtTonsCinza(event);
-
-        manipula();
-
     }
 
     @FXML
     private void equalizarHistograma(ActionEvent event) {
-        double altura = image.getHeight();
-        double largura = image.getWidth();
-        
-        //arruma vetor - num/M*N
-        double vetorN[] = new double[256];
-        for(int i = 0;i<256;i++){
-            vetorN[i] = vetor[i]/(altura*largura);
-        }
-        
-        //distribuição acumulado
-        double cdf[] = new double[256];
-        cdf[0] = vetorN[0];
-        for (int i = 1; i < 256; i++) {
-            cdf[i] = cdf[i - 1] + vetorN[i];
-        }
-        
-        //equalizar imagem
-        int media;
-        bImage = SwingFXUtils.fromFXImage(image, null);
+
+        if(eqHist){
+            double altura = image.getHeight();
+            double largura = image.getWidth();
+
+            //arruma vetor - num/M*N
+            double vetorN[] = new double[256];
+            for (int i = 0; i < 256; i++) {
+                vetorN[i] = vetor[i] / (altura * largura);
+            }
+
+            //distribuição acumulado
+            double cdf[] = new double[256];
+            cdf[0] = vetorN[0];
+            for (int i = 1; i < 256; i++) {
+                cdf[i] = cdf[i - 1] + vetorN[i];
+            }
+
+            //equalizar imagem
+            int media;
+            bImage = SwingFXUtils.fromFXImage(image, null);
             int pixel[] = {0, 0, 0, 0};
             WritableRaster raster = bImage.getRaster();
             for (int y = 0; y < image.getHeight(); y++) {
                 for (int x = 0; x < image.getWidth(); x++) {
                     raster.getPixel(x, y, pixel);
-                    pixel[0] =  (int) (cdf[pixel[0]] * 255);
+                    pixel[0] = (int) (cdf[pixel[0]] * 255);
                     pixel[1] = (int) (cdf[pixel[1]] * 255);
                     pixel[2] = (int) (cdf[pixel[2]] * 255);
                     raster.setPixel(x, y, pixel);
@@ -767,14 +774,16 @@ public class FXMLDocumentController implements Initializable {
             image = SwingFXUtils.toFXImage(bImage, null);
             imagemView.setImage(image);
             manipula();
-        
+            flagEq = true;
+            eqHist = false;
+        }
     }
 
     @FXML
     private void evtBinarizarManual(ActionEvent event) {
         int media;
         int ponto = Integer.parseInt(txBinarizar.getText());
-        
+
         if (image != null) {
             bImage = SwingFXUtils.fromFXImage(image, null);
             int pixel[] = {0, 0, 0, 0};
