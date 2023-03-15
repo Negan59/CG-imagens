@@ -607,6 +607,9 @@ public class CanetaMasterController implements Initializable {
     private void evtCriaPoligono(ActionEvent event) {
         poligono = true;
         p = new Poligono();
+        corR = 0;
+        corG = 0;
+        corB = 0;
     }
 
     private Poligono salvaAtual(Poligono pol) {
@@ -614,8 +617,8 @@ public class CanetaMasterController implements Initializable {
         for (int i = 0; i < pol.getOriginal().size(); i++) {
             xtemp = pol.getOriginal().get(i).getX();
             ytemp = pol.getOriginal().get(i).getY();
-            System.out.println("x - "+xtemp+" y - "+ytemp);
-            pol.getAtual().add(new Pontos(xtemp,ytemp));
+            System.out.println("x - " + xtemp + " y - " + ytemp);
+            pol.getAtual().add(new Pontos(xtemp, ytemp));
         }
         return pol;
     }
@@ -623,7 +626,7 @@ public class CanetaMasterController implements Initializable {
     private void pintarNovamente(int num) {
         int altura = 1200;
         int largura = 768;
-        System.out.println("num = "+num);
+        System.out.println("num = " + num);
         BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
         int cor = 0xFFFFFFFF; // branco
         for (int x = 0; x < largura; x++) {
@@ -639,26 +642,26 @@ public class CanetaMasterController implements Initializable {
                 corR = 255;
                 corG = 0;
                 corB = 0;
-            }
-            else{
+            } else {
                 corR = 0;
                 corG = 0;
                 corB = 0;
             }
-            ArrayList<Pontos> pt = poligonos.get(i).getOriginal();
-            System.out.println("pt - "+pt.size());
+            ArrayList<Pontos> pt = poligonos.get(i).getAtual();
+            System.out.println("pt - " + pt.size());
             if (pt.size() > 2) {
-                for (i = 0; i < pt.size() - 1; i++) {
-                    x1 = pt.get(i).getX();
-                    y1 = pt.get(i).getY();
-                    x2 = pt.get(i + 1).getX();
-                    y2 = pt.get(i + 1).getY();
+                int j;
+                for (j = 0; j < pt.size() - 1; j++) {
+                    x1 = pt.get(j).getX();
+                    y1 = pt.get(j).getY();
+                    x2 = pt.get(j + 1).getX();
+                    y2 = pt.get(j + 1).getY();
                     this.retaMedio();
                 }
                 x1 = pt.get(0).getX();
                 y1 = pt.get(0).getY();
-                x2 = pt.get(i).getX();
-                y2 = pt.get(i).getY();
+                x2 = pt.get(j).getX();
+                y2 = pt.get(j).getY();
                 this.retaMedio();
             }
         }
