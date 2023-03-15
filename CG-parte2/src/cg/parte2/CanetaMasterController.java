@@ -16,6 +16,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -63,6 +64,14 @@ public class CanetaMasterController implements Initializable {
     private Poligono p;
     @FXML
     private VBox vboxEsquerda;
+    
+    private boolean translada = false;
+    @FXML
+    private TextField txRoda;
+    @FXML
+    private Button btnEsquerda;
+    @FXML
+    private Button btnDireita;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -107,8 +116,13 @@ public class CanetaMasterController implements Initializable {
     private void evtPegaXY(MouseEvent event) {
         x1 = event.getX();
         y1 = event.getY();
+        
+        if(translada){
+            this.translacao(x1, y1);
+            this.translada = false;
+        }
 
-        if (poligono) {
+        else if (poligono) {
             if (event.getClickCount() == 1) {
                 p.getOriginal().add(new Pontos(x1, y1));
             }
@@ -572,6 +586,7 @@ public class CanetaMasterController implements Initializable {
         }
         image = SwingFXUtils.toFXImage(imagem, null);
         imgView.setImage(image);
+        poligonos = new ArrayList();
         vboxEsquerda.getChildren().remove(2, vboxEsquerda.getChildren().size());
     }
 
@@ -665,6 +680,71 @@ public class CanetaMasterController implements Initializable {
                 this.retaMedio();
             }
         }
+    }
+    
+    private void translacao(double x3, double y3){
+        double dx;
+        double dy;
+        Poligono po = poligonos.get(numObj);
+        dx = x3 - po.getOriginal().get(0).getX();
+        dy = y3 - po.getOriginal().get(0).getY();
+        po.getMatrizTransformacao()[0][2] = dx;
+        po.getMatrizTransformacao()[1][2] = dy;
+        
+        for(int k = 0; k<po.getOriginal().size();k++){
+            po.getAtual().get(k).setX(
+                    po.getMatrizTransformacao()[0][0] * po.getOriginal().get(k).getX() + 
+                    po.getMatrizTransformacao()[0][1] * po.getOriginal().get(k).getY()+
+                    po.getMatrizTransformacao()[0][2] * 1);
+            po.getAtual().get(k).setY(po.getMatrizTransformacao()[1][0] * po.getOriginal().get(k).getX() + 
+                    po.getMatrizTransformacao()[1][1] * po.getOriginal().get(k).getY()+
+                    po.getMatrizTransformacao()[1][2] * 1);
+        }
+        
+        pintarNovamente(numObj);
+    }
+    
+    private void rotacao(double grau){
+        
+        Poligono po = poligonos.get(numObj);
+        po.getMatrizTransformacao()[0][0] = Math.cos(grau);
+        po.getMatrizTransformacao()[1][0] = Math.sin(grau);
+        po.getMatrizTransformacao()[1][1] = Math.cos(grau);
+        po.getMatrizTransformacao()[0][1] = -Math.sin(grau);
+        
+        for(int k = 0; k<po.getOriginal().size();k++){
+            po.getAtual().get(k).setX(
+                    po.getMatrizTransformacao()[0][0] * po.getOriginal().get(k).getX() + 
+                    po.getMatrizTransformacao()[0][1] * po.getOriginal().get(k).getY()+
+                    po.getMatrizTransformacao()[0][2] * 1);
+            po.getAtual().get(k).setY(po.getMatrizTransformacao()[1][0] * po.getOriginal().get(k).getX() + 
+                    po.getMatrizTransformacao()[1][1] * po.getOriginal().get(k).getY()+
+                    po.getMatrizTransformacao()[1][2] * 1);
+        }
+        
+        pintarNovamente(numObj);
+    }
+
+    @FXML
+    private void evtTranslada(ActionEvent event) {
+        this.translada = true;
+    }
+
+    @FXML
+    private void evtRotacao(ActionEvent event) {
+        btnEsquerda.setVisible(true);
+        btnDireita.setVisible(true);
+        txRoda.setVisible(true);
+    }
+
+    @FXML
+    private void evtRotacionaEsquerda(ActionEvent event) {
+        this.rotacao(Double.parseDouble(txRoda.getText()));
+    }
+
+    @FXML
+    private void evtRotacionaDireita(ActionEvent event) {
+        this.rotacao(Double.parseDouble(txRoda.getText()));
     }
 
 }
