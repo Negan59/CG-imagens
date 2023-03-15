@@ -45,7 +45,7 @@ public class CanetaMasterController implements Initializable {
     private int corR = 0;
     private int corG = 0;
     private int corB = 0;
-    
+
     private int numObj;
 
     private double x1, x2, y1, y2;
@@ -144,7 +144,8 @@ public class CanetaMasterController implements Initializable {
                 }
                 poligono = false;
                 vboxEsquerda.getChildren().add(tabela);
-
+                p = salvaAtual(p);
+                poligonos.add(p);
             }
         }
 
@@ -154,6 +155,7 @@ public class CanetaMasterController implements Initializable {
         tabela.setOnMouseClicked(event -> {
             numObj = indiceTabela;
             System.out.println("Tabela " + indiceTabela + " clicada");
+            this.pintarNovamente(numObj);
         });
     }
 
@@ -570,6 +572,7 @@ public class CanetaMasterController implements Initializable {
         }
         image = SwingFXUtils.toFXImage(imagem, null);
         imgView.setImage(image);
+        vboxEsquerda.getChildren().remove(2, vboxEsquerda.getChildren().size());
     }
 
     @FXML
@@ -604,6 +607,61 @@ public class CanetaMasterController implements Initializable {
     private void evtCriaPoligono(ActionEvent event) {
         poligono = true;
         p = new Poligono();
+    }
+
+    private Poligono salvaAtual(Poligono pol) {
+        double xtemp, ytemp;
+        for (int i = 0; i < pol.getOriginal().size(); i++) {
+            xtemp = pol.getOriginal().get(i).getX();
+            ytemp = pol.getOriginal().get(i).getY();
+            System.out.println("x - "+xtemp+" y - "+ytemp);
+            pol.getAtual().add(new Pontos(xtemp,ytemp));
+        }
+        return pol;
+    }
+
+    private void pintarNovamente(int num) {
+        int altura = 1200;
+        int largura = 768;
+        System.out.println("num = "+num);
+        BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
+        int cor = 0xFFFFFFFF; // branco
+        for (int x = 0; x < largura; x++) {
+            for (int y = 0; y < altura; y++) {
+                imagem.setRGB(x, y, cor);
+            }
+        }
+        image = SwingFXUtils.toFXImage(imagem, null);
+        imgView.setImage(image);
+        System.out.println(poligonos.size());
+        for (int i = 0; i < poligonos.size(); i++) {
+            if (i == num) {
+                corR = 255;
+                corG = 0;
+                corB = 0;
+            }
+            else{
+                corR = 0;
+                corG = 0;
+                corB = 0;
+            }
+            ArrayList<Pontos> pt = poligonos.get(i).getOriginal();
+            System.out.println("pt - "+pt.size());
+            if (pt.size() > 2) {
+                for (i = 0; i < pt.size() - 1; i++) {
+                    x1 = pt.get(i).getX();
+                    y1 = pt.get(i).getY();
+                    x2 = pt.get(i + 1).getX();
+                    y2 = pt.get(i + 1).getY();
+                    this.retaMedio();
+                }
+                x1 = pt.get(0).getX();
+                y1 = pt.get(0).getY();
+                x2 = pt.get(i).getX();
+                y2 = pt.get(i).getY();
+                this.retaMedio();
+            }
+        }
     }
 
 }
