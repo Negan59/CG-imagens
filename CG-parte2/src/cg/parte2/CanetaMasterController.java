@@ -10,6 +10,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
@@ -106,10 +107,13 @@ public class CanetaMasterController implements Initializable {
         y1 = event.getY();
 
         if (poligono) {
-            p.getOriginal().add(new Pontos(x1, y1));
+            if (event.getClickCount() == 1) {
+                p.getOriginal().add(new Pontos(x1, y1));
+            }
 
             int i;
             if (event.getClickCount() == 2) {
+                Button b = new Button();
                 TableView<Pontos> tabela = new TableView<>();
                 TableColumn<Pontos, Double> colunaNome = new TableColumn<>("X");
                 colunaNome.setCellValueFactory(new PropertyValueFactory<>("x"));
@@ -121,6 +125,7 @@ public class CanetaMasterController implements Initializable {
                 tabela.getColumns().add(colunaIdade);
 
                 tabela.setItems(FXCollections.observableArrayList(p.getOriginal()));
+                addClickListener(tabela, vboxEsquerda.getChildren().size()-2);
                 if (p.getOriginal().size() > 2) {
                     for (i = 0; i < p.getOriginal().size() - 1; i++) {
                         x1 = p.getOriginal().get(i).getX();
@@ -137,10 +142,17 @@ public class CanetaMasterController implements Initializable {
                 }
                 poligono = false;
                 vboxEsquerda.getChildren().add(tabela);
+                
             }
         }
 
     }
+    
+    private void addClickListener(TableView<Pontos> tabela, int indiceTabela) {
+    tabela.setOnMouseClicked(event -> {
+        System.out.println("Tabela " + indiceTabela + " clicada");
+    });
+}
 
     private void desenhaRetaReal() {
         BufferedImage bimage = null;
