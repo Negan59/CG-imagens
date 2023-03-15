@@ -45,6 +45,8 @@ public class CanetaMasterController implements Initializable {
     private int corR = 0;
     private int corG = 0;
     private int corB = 0;
+    
+    private int numObj;
 
     private double x1, x2, y1, y2;
     @FXML
@@ -125,7 +127,7 @@ public class CanetaMasterController implements Initializable {
                 tabela.getColumns().add(colunaIdade);
 
                 tabela.setItems(FXCollections.observableArrayList(p.getOriginal()));
-                addClickListener(tabela, vboxEsquerda.getChildren().size()-2);
+                addClickListener(tabela, vboxEsquerda.getChildren().size() - 2);
                 if (p.getOriginal().size() > 2) {
                     for (i = 0; i < p.getOriginal().size() - 1; i++) {
                         x1 = p.getOriginal().get(i).getX();
@@ -142,17 +144,18 @@ public class CanetaMasterController implements Initializable {
                 }
                 poligono = false;
                 vboxEsquerda.getChildren().add(tabela);
-                
+
             }
         }
 
     }
-    
+
     private void addClickListener(TableView<Pontos> tabela, int indiceTabela) {
-    tabela.setOnMouseClicked(event -> {
-        System.out.println("Tabela " + indiceTabela + " clicada");
-    });
-}
+        tabela.setOnMouseClicked(event -> {
+            numObj = indiceTabela;
+            System.out.println("Tabela " + indiceTabela + " clicada");
+        });
+    }
 
     private void desenhaRetaReal() {
         BufferedImage bimage = null;
