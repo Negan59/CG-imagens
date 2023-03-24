@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="827.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cg.parte2.CanetaMasterController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="827.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cg.parte2.CanetaMasterController">
    <right>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -151,9 +151,11 @@
          <children>
             <MenuButton mnemonicParsing="false" style="-fx-background-color: none;" text="Operações">
               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#evtEscala" text="Escala" />
                 <MenuItem mnemonicParsing="false" onAction="#evtTranslada" text="Translação" />
                 <MenuItem mnemonicParsing="false" onAction="#evtRotacao" text="Rotação" />
-                  <MenuItem mnemonicParsing="false" text="Escala" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtFloodFill" text="Flood fill" />
+                  <MenuItem mnemonicParsing="false" text="Rasteirização" />
               </items>
                <font>
                   <Font size="20.0" />
@@ -168,6 +170,8 @@
             <Button fx:id="btnEsquerda" mnemonicParsing="false" onAction="#evtRotacionaEsquerda" text="&lt;" visible="false" />
             <TextField fx:id="txRoda" prefHeight="25.0" prefWidth="64.0" visible="false" />
             <Button fx:id="btnDireita" mnemonicParsing="false" onAction="#evtRotacionaDireita" text="&gt;" visible="false" />
+            <TextField fx:id="txEscala" prefHeight="25.0" prefWidth="114.0" visible="false" />
+            <Button fx:id="btnEscala" mnemonicParsing="false" onAction="#evtGeraEscala" text="Escala" visible="false" />
          </children>
       </HBox>
    </bottom>

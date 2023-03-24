@@ -5,6 +5,7 @@ import java.awt.image.WritableRaster;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Stack;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -64,7 +65,7 @@ public class CanetaMasterController implements Initializable {
     private Poligono p;
     @FXML
     private VBox vboxEsquerda;
-    
+
     private boolean translada = false;
     @FXML
     private TextField txRoda;
@@ -72,6 +73,12 @@ public class CanetaMasterController implements Initializable {
     private Button btnEsquerda;
     @FXML
     private Button btnDireita;
+
+    private boolean floodfill = false;
+    @FXML
+    private TextField txEscala;
+    @FXML
+    private Button btnEscala;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -116,13 +123,13 @@ public class CanetaMasterController implements Initializable {
     private void evtPegaXY(MouseEvent event) {
         x1 = event.getX();
         y1 = event.getY();
-        
-        if(translada){
+        if (this.floodfill) {
+            floodfill = false;
+            this.floodfill(x1, y1);
+        } else if (translada) {
             this.translacao(x1, y1);
             this.translada = false;
-        }
-
-        else if (poligono) {
+        } else if (poligono) {
             if (event.getClickCount() == 1) {
                 p.getOriginal().add(new Pontos(x1, y1));
             }
@@ -681,70 +688,213 @@ public class CanetaMasterController implements Initializable {
             }
         }
     }
-    
-    private void translacao(double x3, double y3){
+
+    public static double[][] multiplicarMatrizes(double[][] a, double[][] b) {
+        int aRows = a.length;
+        int aColumns = a[0].length;
+        int bRows = b.length;
+        int bColumns = b[0].length;
+        if (aColumns != bRows) {
+            throw new IllegalArgumentException("Number of columns of first matrix must match number of rows of second matrix");
+        }
+        double[][] result = new double[aRows][bColumns];
+        for (int i = 0; i < aRows; i++) {
+            for (int j = 0; j < bColumns; j++) {
+                for (int k = 0; k < aColumns; k++) {
+                    result[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    private void translacao(double x3, double y3) {
+
         double dx;
         double dy;
         Poligono po = poligonos.get(numObj);
-        dx = x3 - po.getOriginal().get(0).getX();
-        dy = y3 - po.getOriginal().get(0).getY();
+        double xCentro = 0, yCentro = 0;
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            xCentro += po.getOriginal().get(k).getX();
+            yCentro += po.getOriginal().get(k).getY();
+        }
+        xCentro /= po.getOriginal().size();
+        yCentro /= po.getOriginal().size();
+        dx = x3 - xCentro;
+        dy = y3 - yCentro;
+        
+        System.out.println("dx - "+dx+" dy - "+dy);
+        double[][] matrizTranslacao = {{1, 0, dx}, {0, 1, dy}, {0, 0, 1}};
         po.getMatrizTransformacao()[0][2] = dx;
         po.getMatrizTransformacao()[1][2] = dy;
-        
-        for(int k = 0; k<po.getOriginal().size();k++){
-            po.getAtual().get(k).setX(
-                    po.getMatrizTransformacao()[0][0] * po.getOriginal().get(k).getX() + 
-                    po.getMatrizTransformacao()[0][1] * po.getOriginal().get(k).getY()+
-                    po.getMatrizTransformacao()[0][2] * 1);
-            po.getAtual().get(k).setY(po.getMatrizTransformacao()[1][0] * po.getOriginal().get(k).getX() + 
-                    po.getMatrizTransformacao()[1][1] * po.getOriginal().get(k).getY()+
-                    po.getMatrizTransformacao()[1][2] * 1);
+        //po.setMatrizTransformacao(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao));
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            double x = po.getOriginal().get(k).getX();
+            double y = po.getOriginal().get(k).getY();
+            double xNovo = po.getMatrizTransformacao()[0][0] * x + po.getMatrizTransformacao()[0][1] * y + po.getMatrizTransformacao()[0][2];
+            double yNovo = po.getMatrizTransformacao()[1][0] * x + po.getMatrizTransformacao()[1][1] * y + po.getMatrizTransformacao()[1][2];
+            System.out.println("xNovo - " + xNovo);
+            po.getAtual().get(k).setX(xNovo);
+            po.getAtual().get(k).setY(yNovo);
         }
-        
+
         pintarNovamente(numObj);
+        
     }
     
-    private void rotacao(double grau){
+    private void escala(double tam){
         
         Poligono po = poligonos.get(numObj);
-        po.getMatrizTransformacao()[0][0] = Math.cos(grau);
-        po.getMatrizTransformacao()[1][0] = Math.sin(grau);
-        po.getMatrizTransformacao()[1][1] = Math.cos(grau);
-        po.getMatrizTransformacao()[0][1] = -Math.sin(grau);
+
+        po.getMatrizTransformacao()[0][0] = tam;
+        po.getMatrizTransformacao()[1][1] = tam;
         
-        for(int k = 0; k<po.getOriginal().size();k++){
-            po.getAtual().get(k).setX(
-                    po.getMatrizTransformacao()[0][0] * po.getOriginal().get(k).getX() + 
-                    po.getMatrizTransformacao()[0][1] * po.getOriginal().get(k).getY()+
-                    po.getMatrizTransformacao()[0][2] * 1);
-            po.getAtual().get(k).setY(po.getMatrizTransformacao()[1][0] * po.getOriginal().get(k).getX() + 
-                    po.getMatrizTransformacao()[1][1] * po.getOriginal().get(k).getY()+
-                    po.getMatrizTransformacao()[1][2] * 1);
+        double[][] matrizEscala = {{tam, 0, 0}, {0, tam, 0}, {0, 0, 1}};
+        po.setMatrizTransformacao(multiplicarMatrizes(matrizEscala,po.getMatrizTransformacao()));
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            double x = po.getOriginal().get(k).getX();
+            double y = po.getOriginal().get(k).getY();
+            double xNovo = po.getMatrizTransformacao()[0][0] * x + po.getMatrizTransformacao()[0][1] * y + po.getMatrizTransformacao()[0][2];
+            double yNovo = po.getMatrizTransformacao()[1][0] * x + po.getMatrizTransformacao()[1][1] * y + po.getMatrizTransformacao()[1][2];
+            System.out.println("xNovo - " + xNovo);
+            po.getAtual().get(k).setX(xNovo);
+            po.getAtual().get(k).setY(yNovo);
         }
-        
+
         pintarNovamente(numObj);
     }
 
+    private void rotacao(double grau) {
+        double rad = Math.toRadians(grau); // Conversão para radianos
+        Poligono po = poligonos.get(numObj);
+
+        // Média aritmética das coordenadas para calcular o centro do polígono
+        double xCentro = 0, yCentro = 0;
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            xCentro += po.getOriginal().get(k).getX();
+            yCentro += po.getOriginal().get(k).getY();
+        }
+        xCentro /= po.getOriginal().size();
+        yCentro /= po.getOriginal().size();
+
+        double[][] matrizTranslacao1 = {{1, 0, -xCentro}, {0, 1, -yCentro}, {0, 0, 1}};
+
+        // Rotação
+        double[][] matrizRotacao = {{Math.cos(rad), -Math.sin(rad), 0}, {Math.sin(rad), Math.cos(rad), 0}, {0, 0, 1}};
+
+        // Deslocamento de volta para a posição original
+        double[][] matrizTranslacao2 = {{1, 0, xCentro}, {0, 1, yCentro}, {0, 0, 1}};
+
+        // Multiplicação das matrizes de transformação
+        po.setMatrizTransformacao(multiplicarMatrizes(multiplicarMatrizes(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao2), matrizRotacao),matrizTranslacao1));
+        System.out.println("teste - " + po.getMatrizTransformacao()[0][0]);
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            double x = po.getOriginal().get(k).getX();
+            double y = po.getOriginal().get(k).getY();
+            double xNovo = po.getMatrizTransformacao()[0][0] * x + po.getMatrizTransformacao()[0][1] * y + po.getMatrizTransformacao()[0][2];
+            double yNovo = po.getMatrizTransformacao()[1][0] * x + po.getMatrizTransformacao()[1][1] * y + po.getMatrizTransformacao()[1][2];
+            System.out.println("xNovo - " + xNovo);
+            po.getAtual().get(k).setX(xNovo);
+            po.getAtual().get(k).setY(yNovo);
+        }
+        pintarNovamente(numObj);
+
+    }
+
     @FXML
-    private void evtTranslada(ActionEvent event) {
+    private void evtTranslada(ActionEvent event
+    ) {
         this.translada = true;
     }
 
     @FXML
-    private void evtRotacao(ActionEvent event) {
+    private void evtRotacao(ActionEvent event
+    ) {
         btnEsquerda.setVisible(true);
         btnDireita.setVisible(true);
         txRoda.setVisible(true);
     }
 
     @FXML
-    private void evtRotacionaEsquerda(ActionEvent event) {
+    private void evtRotacionaEsquerda(ActionEvent event
+    ) {
         this.rotacao(Double.parseDouble(txRoda.getText()));
     }
 
     @FXML
-    private void evtRotacionaDireita(ActionEvent event) {
+    private void evtRotacionaDireita(ActionEvent event
+    ) {
         this.rotacao(Double.parseDouble(txRoda.getText()));
+    }
+
+    @FXML
+    private void evtFloodFill(ActionEvent event
+    ) {
+        floodfill = true;
+    }
+
+    private void floodfill(double x, double y) {
+        Stack<Pontos> pilha = new Stack<Pontos>();
+        BufferedImage bimage = null;
+        bimage = SwingFXUtils.fromFXImage(image, null);
+        int pixel[] = {0, 0, 0, 0};
+        WritableRaster raster = bimage.getRaster();
+        pilha.push(new Pontos(x, y));
+        while (!pilha.isEmpty()) {
+            Pontos p = pilha.pop();
+            raster.getPixel((int) p.getX(), (int) p.getY(), pixel);
+            pixel[0] = corR;
+            pixel[1] = corG;
+            pixel[2] = corB;
+            raster.setPixel((int) p.getX(), (int) p.getY(), pixel);
+
+            // Verifica os pixels vizinhos
+            if (p.getX() < image.getWidth() - 1) {
+                Pontos novoPonto = new Pontos(p.getX() + 1, p.getY());
+                raster.getPixel((int) novoPonto.getX(), (int) novoPonto.getY(), pixel);
+                if ((pixel[0] + pixel[1] + pixel[2]) / 3 == 255) {
+                    pilha.add(novoPonto);
+                }
+            }
+
+            if (p.getY() < image.getHeight() - 1) {
+                Pontos novoPonto = new Pontos(p.getX(), p.getY() + 1);
+                raster.getPixel((int) novoPonto.getX(), (int) novoPonto.getY(), pixel);
+                if ((pixel[0] + pixel[1] + pixel[2]) / 3 == 255) {
+                    pilha.add(novoPonto);
+                }
+            }
+
+            if (p.getX() > 0) {
+                Pontos novoPonto = new Pontos(p.getX() - 1, p.getY());
+                raster.getPixel((int) novoPonto.getX(), (int) novoPonto.getY(), pixel);
+                if ((pixel[0] + pixel[1] + pixel[2]) / 3 == 255) {
+                    pilha.add(novoPonto);
+                }
+            }
+
+            if (p.getY() > 0) {
+                Pontos novoPonto = new Pontos(p.getX(), p.getY() - 1);
+                raster.getPixel((int) novoPonto.getX(), (int) novoPonto.getY(), pixel);
+                if ((pixel[0] + pixel[1] + pixel[2]) / 3 == 255) {
+                    pilha.add(novoPonto);
+                }
+            }
+        }
+        image = SwingFXUtils.toFXImage(bimage, null);
+        imgView.setImage(image);
+
+    }
+
+    @FXML
+    private void evtEscala(ActionEvent event) {
+        btnEscala.setVisible(true);
+        txEscala.setVisible(true);
+    }
+
+    @FXML
+    private void evtGeraEscala(ActionEvent event) {
+        this.escala(Double.parseDouble(txEscala.getText()));
     }
 
 }
