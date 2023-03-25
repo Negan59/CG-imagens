@@ -155,7 +155,7 @@
                 <MenuItem mnemonicParsing="false" onAction="#evtTranslada" text="Translação" />
                 <MenuItem mnemonicParsing="false" onAction="#evtRotacao" text="Rotação" />
                   <MenuItem mnemonicParsing="false" onAction="#evtFloodFill" text="Flood fill" />
-                  <MenuItem mnemonicParsing="false" text="Rasteirização" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtRasteirizacao" text="Rasteirização" />
               </items>
                <font>
                   <Font size="20.0" />

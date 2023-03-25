@@ -713,20 +713,14 @@ public class CanetaMasterController implements Initializable {
         double dx;
         double dy;
         Poligono po = poligonos.get(numObj);
-        double xCentro = 0, yCentro = 0;
-        for (int k = 0; k < po.getOriginal().size(); k++) {
-            xCentro += po.getOriginal().get(k).getX();
-            yCentro += po.getOriginal().get(k).getY();
-        }
-        xCentro /= po.getOriginal().size();
-        yCentro /= po.getOriginal().size();
-        dx = x3 - xCentro;
-        dy = y3 - yCentro;
-        
-        System.out.println("dx - "+dx+" dy - "+dy);
+
+        dx = x3 - po.getAtual().get(0).getX();
+        dy = y3 - po.getAtual().get(0).getY();
+
+        System.out.println("dx - " + dx + " dy - " + dy);
         double[][] matrizTranslacao = {{1, 0, dx}, {0, 1, dy}, {0, 0, 1}};
-        po.getMatrizTransformacao()[0][2] = dx;
-        po.getMatrizTransformacao()[1][2] = dy;
+        po.setMatrizTransformacao(multiplicarMatrizes(matrizTranslacao, po.getMatrizTransformacao()));
+
         //po.setMatrizTransformacao(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao));
         for (int k = 0; k < po.getOriginal().size(); k++) {
             double x = po.getOriginal().get(k).getX();
@@ -739,18 +733,18 @@ public class CanetaMasterController implements Initializable {
         }
 
         pintarNovamente(numObj);
-        
+
     }
-    
-    private void escala(double tam){
-        
+
+    private void escala(double tam) {
+
         Poligono po = poligonos.get(numObj);
 
         po.getMatrizTransformacao()[0][0] = tam;
         po.getMatrizTransformacao()[1][1] = tam;
-        
+
         double[][] matrizEscala = {{tam, 0, 0}, {0, tam, 0}, {0, 0, 1}};
-        po.setMatrizTransformacao(multiplicarMatrizes(matrizEscala,po.getMatrizTransformacao()));
+        po.setMatrizTransformacao(multiplicarMatrizes(matrizEscala, po.getMatrizTransformacao()));
         for (int k = 0; k < po.getOriginal().size(); k++) {
             double x = po.getOriginal().get(k).getX();
             double y = po.getOriginal().get(k).getY();
@@ -786,7 +780,7 @@ public class CanetaMasterController implements Initializable {
         double[][] matrizTranslacao2 = {{1, 0, xCentro}, {0, 1, yCentro}, {0, 0, 1}};
 
         // Multiplicação das matrizes de transformação
-        po.setMatrizTransformacao(multiplicarMatrizes(multiplicarMatrizes(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao2), matrizRotacao),matrizTranslacao1));
+        po.setMatrizTransformacao(multiplicarMatrizes(multiplicarMatrizes(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao2), matrizRotacao), matrizTranslacao1));
         System.out.println("teste - " + po.getMatrizTransformacao()[0][0]);
         for (int k = 0; k < po.getOriginal().size(); k++) {
             double x = po.getOriginal().get(k).getX();
@@ -895,6 +889,32 @@ public class CanetaMasterController implements Initializable {
     @FXML
     private void evtGeraEscala(ActionEvent event) {
         this.escala(Double.parseDouble(txEscala.getText()));
+    }
+
+    private ArrayList<Estrutura> geraET() {
+        ArrayList<Estrutura> lista = new ArrayList();
+        ArrayList<Pontos> pt = poligonos.get(numObj).getAtual();
+        System.out.println("pt - " + pt.size());
+        if (pt.size() > 2) {
+            int j;
+            for (j = 0; j < pt.size() - 1; j++) {
+                x1 = pt.get(j).getX();
+                y1 = pt.get(j).getY();
+                x2 = pt.get(j + 1).getX();
+                y2 = pt.get(j + 1).getY();
+                this.retaMedio();
+            }
+            x1 = pt.get(0).getX();
+            y1 = pt.get(0).getY();
+            x2 = pt.get(j).getX();
+            y2 = pt.get(j).getY();
+            this.retaMedio();
+        }
+        return lista;
+    }
+
+    @FXML
+    private void evtRasteirizacao(ActionEvent event) {
     }
 
 }
