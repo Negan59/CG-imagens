@@ -4,8 +4,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -891,30 +897,66 @@ public class CanetaMasterController implements Initializable {
         this.escala(Double.parseDouble(txEscala.getText()));
     }
 
-    private ArrayList<Estrutura> geraET() {
-        ArrayList<Estrutura> lista = new ArrayList();
-        ArrayList<Pontos> pt = poligonos.get(numObj).getAtual();
-        System.out.println("pt - " + pt.size());
-        if (pt.size() > 2) {
-            int j;
-            for (j = 0; j < pt.size() - 1; j++) {
-                x1 = pt.get(j).getX();
-                y1 = pt.get(j).getY();
-                x2 = pt.get(j + 1).getX();
-                y2 = pt.get(j + 1).getY();
-                this.retaMedio();
-            }
-            x1 = pt.get(0).getX();
-            y1 = pt.get(0).getY();
-            x2 = pt.get(j).getX();
-            y2 = pt.get(j).getY();
-            this.retaMedio();
+    private void preenchePoligono() {
+        BufferedImage bimage = null;
+        bimage = SwingFXUtils.fromFXImage(image, null);
+        int pixel[] = {0, 0, 0, 0};
+        WritableRaster raster = bimage.getRaster();
+        double altura = image.getHeight();
+        Poligono po = poligonos.get(numObj);
+
+        ET et = po.gerarET((int) altura);
+        AET aet = new AET();
+
+        List<No> lista;
+        int y = 0, cont = 0;
+        while (y < et.getTF() && et.getAET(y) == null) {
+            ++y;
         }
-        return lista;
+        while (y < image.getHeight() && ((aet.getList().size()) > 0
+                || cont < (et.getQtde()))) {
+            if (!et.getAET(y).getList().isEmpty()) {
+                aet.add(et.getAET(y).getList()); // adicionando novos nodos
+            }
+            aet.sort();
+
+            for (int i = 0; i < aet.getList().size(); ++i) {
+                if (aet.getList().get(i).getYmax() <= y) {
+                    aet.getList().remove(aet.getList().get(i));
+                }
+            }
+            // desenhando linhas
+            lista = aet.getList();
+            int x, nx;
+            for (int i = 0; i + 1 < lista.size(); i += 2) {
+                x = (int) Math.round(lista.get(i).getXmin());
+                nx = (int) Math.round(lista.get(i + 1).getXmin());
+                while (x <= nx) {
+                    raster.getPixel((int) x, (int) y, pixel);
+                    pixel[0] = corR;
+                    pixel[1] = corG;
+                    pixel[2] = corB;
+                    raster.setPixel((int) x, (int) y, pixel);
+                    ++x;
+                }
+            }
+            ++y;
+            for (int i = 0; i < aet.getList().size(); ++i) {
+                aet.getList().get(i).setXmin(aet.getList().get(i).getXmin()
+                        + aet.getList().get(i).getIncX());
+            }
+        }
+        image = SwingFXUtils.toFXImage(bimage, null);
+
+        imgView.setImage(image);
     }
 
     @FXML
-    private void evtRasteirizacao(ActionEvent event) {
+    private void evtRasteirizacao(ActionEvent event
+    ) {
+        System.out.println("chamando a função de pintar poligono");
+        preenchePoligono();
+
     }
 
 }

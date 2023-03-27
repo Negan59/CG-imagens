@@ -1,37 +1,41 @@
+
 package cg.parte2;
 
 public class No {
-    private double yMax;
-    private double xMin;
-    private double incrX;
+     private double ymax, xmin;
+        private double incx;
+     
+        public No(double ymax, double xmin, double incx)
+        {
+            this.ymax = ymax;
+            this.xmin = xmin;
+            this.incx = incx;
+        }
 
-    public double getyMax() {
-        return yMax;
-    }
+        public double getXmin()
+        {
+            return xmin;
+        }
 
-    public void setyMax(double yMax) {
-        this.yMax = yMax;
-    }
+        public double getYmax()
+        {
+            return ymax;
+        }
 
-    public double getxMin() {
-        return xMin;
-    }
-
-    public void setxMin(double xMin) {
-        this.xMin = xMin;
-    }
-
-    public double getIncrX() {
-        return incrX;
-    }
-
-    public void setIncrX(double incrX) {
-        this.incrX = incrX;
-    }
-
-    public No(double yMax, double xMin, double incrX) {
-        this.yMax = yMax;
-        this.xMin = xMin;
-        this.incrX = incrX;
-    }
+        public double getIncX()
+        {
+            return incx;
+        }
+        public void setXmin(double x)
+        {
+            xmin = x;
+        }
+        public void setYmax(double y)
+        {
+            ymax = y;
+        }
+        public void setIncX(double inc)
+        {
+            incx = inc;
+        }
 }
