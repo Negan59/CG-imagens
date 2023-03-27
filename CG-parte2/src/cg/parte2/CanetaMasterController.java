@@ -930,8 +930,8 @@ public class CanetaMasterController implements Initializable {
             }
             aet.sort();
 
-            for (int i = 0; i < aet.getList().size(); ++i) {
-                if (aet.getList().get(i).getYmax() <= y) {
+            for (int i = aet.getList().size()-1; i >=0; i--) {
+                if (aet.getList().get(i).getYmax() == y) {
                     aet.getList().remove(aet.getList().get(i));
                 }
             }
