@@ -55,7 +55,7 @@ public class Poligono {
         double xmax, ymax, xmin, ymin, incx, dx, dy;
         int y;
         for (int i = 0; i + 1 < pontos.size(); ++i) { // do primeiro ponto até o ultimo
-            if (pontos.get(i).getX() >= pontos.get(i + 1).getY()) {
+            if (pontos.get(i).getY() >= pontos.get(i + 1).getY()) {
                 xmax = pontos.get(i).getX();
                 ymax = pontos.get(i).getY();
                 xmin = pontos.get(i + 1).getX();
