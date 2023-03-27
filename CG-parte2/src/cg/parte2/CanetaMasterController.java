@@ -85,6 +85,12 @@ public class CanetaMasterController implements Initializable {
     private TextField txEscala;
     @FXML
     private Button btnEscala;
+    
+    private boolean cisalhamentoX = false, cisalhamentoY = false;
+    @FXML
+    private TextField txCisalhamento;
+    @FXML
+    private Button btnCisalhamento;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -587,6 +593,10 @@ public class CanetaMasterController implements Initializable {
 
     @FXML
     private void evtLimparTela(ActionEvent event) {
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        
         int altura = 1200;
         int largura = 768;
 
@@ -957,6 +967,162 @@ public class CanetaMasterController implements Initializable {
         System.out.println("chamando a função de pintar poligono");
         preenchePoligono();
 
+    }
+
+    @FXML
+    private void evtEspelhamento(ActionEvent event) {
+         
+        Poligono po = poligonos.get(numObj);
+
+        // Média aritmética das coordenadas para calcular o centro do polígono
+        double xCentro = 0, yCentro = 0;
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            xCentro += po.getOriginal().get(k).getX();
+            yCentro += po.getOriginal().get(k).getY();
+        }
+        xCentro /= po.getOriginal().size();
+        yCentro /= po.getOriginal().size();
+
+        double[][] matrizTranslacao1 = {{1, 0, -xCentro}, {0, 1, -yCentro}, {0, 0, 1}};
+
+        // Rotação
+        double[][] matrizEspelho = {{1, 0, 0}, {0, -1, 0}, {0, 0, 1}};
+
+        // Deslocamento de volta para a posição original
+        double[][] matrizTranslacao2 = {{1, 0, xCentro}, {0, 1, yCentro}, {0, 0, 1}};
+
+        // Multiplicação das matrizes de transformação
+        po.setMatrizTransformacao(multiplicarMatrizes(multiplicarMatrizes(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao2), matrizEspelho), matrizTranslacao1));
+        System.out.println("teste - " + po.getMatrizTransformacao()[0][0]);
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            double x = po.getOriginal().get(k).getX();
+            double y = po.getOriginal().get(k).getY();
+            double xNovo = po.getMatrizTransformacao()[0][0] * x + po.getMatrizTransformacao()[0][1] * y + po.getMatrizTransformacao()[0][2];
+            double yNovo = po.getMatrizTransformacao()[1][0] * x + po.getMatrizTransformacao()[1][1] * y + po.getMatrizTransformacao()[1][2];
+            System.out.println("xNovo - " + xNovo);
+            po.getAtual().get(k).setX(xNovo);
+            po.getAtual().get(k).setY(yNovo);
+        }
+        pintarNovamente(numObj);
+    }
+
+    @FXML
+    private void evtCisalhamentoX(ActionEvent event) {
+        
+        cisalhamentoX = true;
+        txCisalhamento.setVisible(true);
+        btnCisalhamento.setVisible(true);
+    }
+
+    @FXML
+    private void evtCisalhamentoY(ActionEvent event) {
+        
+        cisalhamentoY = true;
+        txCisalhamento.setVisible(true);
+        btnCisalhamento.setVisible(true);
+    }
+
+    @FXML
+    private void evtCisalhamento(ActionEvent event) {
+        
+        double[][] matrizX = {{1, 0, 0}, {Double.parseDouble(txCisalhamento.getText()), 1, 0}, {0, 0, 1}};
+        double[][] matrizY = {{1, Double.parseDouble(txCisalhamento.getText()), 0}, {0, 1, 0}, {0, 0, 1}};
+        
+        Poligono po = poligonos.get(numObj);
+        
+        if(cisalhamentoX){
+            
+            po.setMatrizTransformacao(multiplicarMatrizes(po.getMatrizTransformacao(), matrizX));
+        }
+        else if(cisalhamentoY){
+            
+            po.setMatrizTransformacao(multiplicarMatrizes(po.getMatrizTransformacao(), matrizY));
+        }
+        
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            double x = po.getOriginal().get(k).getX();
+            double y = po.getOriginal().get(k).getY();
+            double xNovo = po.getMatrizTransformacao()[0][0] * x + po.getMatrizTransformacao()[0][1] * y + po.getMatrizTransformacao()[0][2];
+            double yNovo = po.getMatrizTransformacao()[1][0] * x + po.getMatrizTransformacao()[1][1] * y + po.getMatrizTransformacao()[1][2];
+            System.out.println("xNovo - " + xNovo);
+            System.out.println("yNovo - " + yNovo);
+            po.getAtual().get(k).setX(xNovo);
+            po.getAtual().get(k).setY(yNovo);
+        }
+
+        pintarNovamente(numObj);
+    }
+
+    @FXML
+    private void evtEspelhamentoY(ActionEvent event) {
+        Poligono po = poligonos.get(numObj);
+
+        // Média aritmética das coordenadas para calcular o centro do polígono
+        double xCentro = 0, yCentro = 0;
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            xCentro += po.getOriginal().get(k).getX();
+            yCentro += po.getOriginal().get(k).getY();
+        }
+        xCentro /= po.getOriginal().size();
+        yCentro /= po.getOriginal().size();
+
+        double[][] matrizTranslacao1 = {{1, 0, -xCentro}, {0, 1, -yCentro}, {0, 0, 1}};
+
+        // Rotação
+        double[][] matrizEspelho = {{-1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+
+        // Deslocamento de volta para a posição original
+        double[][] matrizTranslacao2 = {{1, 0, xCentro}, {0, 1, yCentro}, {0, 0, 1}};
+
+        // Multiplicação das matrizes de transformação
+        po.setMatrizTransformacao(multiplicarMatrizes(multiplicarMatrizes(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao2), matrizEspelho), matrizTranslacao1));
+        System.out.println("teste - " + po.getMatrizTransformacao()[0][0]);
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            double x = po.getOriginal().get(k).getX();
+            double y = po.getOriginal().get(k).getY();
+            double xNovo = po.getMatrizTransformacao()[0][0] * x + po.getMatrizTransformacao()[0][1] * y + po.getMatrizTransformacao()[0][2];
+            double yNovo = po.getMatrizTransformacao()[1][0] * x + po.getMatrizTransformacao()[1][1] * y + po.getMatrizTransformacao()[1][2];
+            System.out.println("xNovo - " + xNovo);
+            po.getAtual().get(k).setX(xNovo);
+            po.getAtual().get(k).setY(yNovo);
+        }
+        pintarNovamente(numObj);
+    }
+
+    @FXML
+    private void evtEspelhamentoXY(ActionEvent event) {
+        Poligono po = poligonos.get(numObj);
+
+        // Média aritmética das coordenadas para calcular o centro do polígono
+        double xCentro = 0, yCentro = 0;
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            xCentro += po.getOriginal().get(k).getX();
+            yCentro += po.getOriginal().get(k).getY();
+        }
+        xCentro /= po.getOriginal().size();
+        yCentro /= po.getOriginal().size();
+
+        double[][] matrizTranslacao1 = {{1, 0, -xCentro}, {0, 1, -yCentro}, {0, 0, 1}};
+
+        // Rotação
+        double[][] matrizEspelho = {{-1, 0, 0}, {0, -1, 0}, {0, 0, 1}};
+
+        // Deslocamento de volta para a posição original
+        double[][] matrizTranslacao2 = {{1, 0, xCentro}, {0, 1, yCentro}, {0, 0, 1}};
+
+        // Multiplicação das matrizes de transformação
+        po.setMatrizTransformacao(multiplicarMatrizes(multiplicarMatrizes(multiplicarMatrizes(po.getMatrizTransformacao(), matrizTranslacao2), matrizEspelho), matrizTranslacao1));
+        System.out.println("teste - " + po.getMatrizTransformacao()[0][0]);
+        for (int k = 0; k < po.getOriginal().size(); k++) {
+            double x = po.getOriginal().get(k).getX();
+            double y = po.getOriginal().get(k).getY();
+            double xNovo = po.getMatrizTransformacao()[0][0] * x + po.getMatrizTransformacao()[0][1] * y + po.getMatrizTransformacao()[0][2];
+            double yNovo = po.getMatrizTransformacao()[1][0] * x + po.getMatrizTransformacao()[1][1] * y + po.getMatrizTransformacao()[1][2];
+            System.out.println("xNovo - " + xNovo);
+            po.getAtual().get(k).setX(xNovo);
+            po.getAtual().get(k).setY(yNovo);
+        }
+        pintarNovamente(numObj);
     }
 
 }
