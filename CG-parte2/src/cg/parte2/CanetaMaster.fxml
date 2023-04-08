@@ -16,13 +16,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="827.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cg.parte2.CanetaMasterController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="827.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cg.parte2.CanetaMasterController">
    <right>
       <VBox BorderPane.alignment="CENTER">
          <children>
             <VBox prefHeight="400.0" prefWidth="124.0">
                <children>
-                  <Label style="-fx-font-weight: bold;" text="Reta">
+                  <Label style="-fx-font-weight: bold;" text="Retas">
                      <VBox.margin>
                         <Insets left="10.0" top="18.0" />
                      </VBox.margin>
@@ -30,7 +30,7 @@
                         <Font size="21.0" />
                      </font>
                   </Label>
-                  <RadioButton fx:id="retaReal" mnemonicParsing="false" text="Equação real">
+                  <RadioButton fx:id="retaReal" mnemonicParsing="false" text="Equação Real">
                      <padding>
                         <Insets left="5.0" top="5.0" />
                      </padding>
@@ -43,7 +43,7 @@
                         <Insets left="5.0" top="5.0" />
                      </padding>
                   </RadioButton>
-                  <RadioButton fx:id="retaMedio" mnemonicParsing="false" text="Ponto médio" toggleGroup="$exp">
+                  <RadioButton fx:id="retaMedio" mnemonicParsing="false" text="Ponto Médio" toggleGroup="$exp">
                      <padding>
                         <Insets left="5.0" top="5.0" />
                      </padding>
@@ -52,7 +52,7 @@
             </VBox>
             <VBox layoutX="10.0" layoutY="10.0" prefHeight="400.0" prefWidth="124.0">
                <children>
-                  <Label style="-fx-font-weight: bold;" text="Circunferência">
+                  <Label style="-fx-font-weight: bold;" text="Circunferências">
                      <VBox.margin>
                         <Insets left="10.0" top="18.0" />
                      </VBox.margin>
@@ -60,7 +60,7 @@
                         <Font size="21.0" />
                      </font>
                   </Label>
-                  <RadioButton fx:id="cirReal" mnemonicParsing="false" text="Equação real" toggleGroup="$exp">
+                  <RadioButton fx:id="cirReal" mnemonicParsing="false" text="Equação Real" toggleGroup="$exp">
                      <padding>
                         <Insets left="5.0" top="5.0" />
                      </padding>
@@ -70,7 +70,7 @@
                         <Insets left="5.0" top="5.0" />
                      </padding>
                   </RadioButton>
-                  <RadioButton fx:id="cirMedio" mnemonicParsing="false" text="Ponto médio" toggleGroup="$exp">
+                  <RadioButton fx:id="cirMedio" mnemonicParsing="false" text="Ponto Médio" toggleGroup="$exp">
                      <padding>
                         <Insets left="5.0" top="5.0" />
                      </padding>
@@ -87,7 +87,7 @@
                         <Font size="21.0" />
                      </font>
                   </Label>
-                  <RadioButton fx:id="elipse" mnemonicParsing="false" text="Ponto médio" toggleGroup="$exp">
+                  <RadioButton fx:id="elipse" mnemonicParsing="false" text="Ponto Médio" toggleGroup="$exp">
                      <padding>
                         <Insets left="5.0" top="5.0" />
                      </padding>
@@ -96,7 +96,7 @@
             </VBox>
             <VBox alignment="CENTER" layoutX="10.0" layoutY="276.0" prefHeight="400.0" prefWidth="124.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#evtLimparTela" style="-fx-background-color: blue;" text="Limpar Tela" textFill="WHITE">
+                  <Button mnemonicParsing="false" onAction="#evtLimparTela" style="-fx-background-color: blue;" text="LIMPAR TELA" textFill="WHITE">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -128,7 +128,7 @@
          <content>
             <VBox fx:id="vboxEsquerda" alignment="CENTER" prefHeight="520.0" prefWidth="151.0">
                <children>
-                  <Label style="-fx-font-weight: bold;" text="Poligono">
+                  <Label style="-fx-font-weight: bold;" text="Polígonos">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -154,13 +154,13 @@
                   <MenuItem mnemonicParsing="false" onAction="#evtEscala" text="Escala" />
                 <MenuItem mnemonicParsing="false" onAction="#evtTranslada" text="Translação" />
                 <MenuItem mnemonicParsing="false" onAction="#evtRotacao" text="Rotação" />
-                  <MenuItem mnemonicParsing="false" onAction="#evtFloodFill" text="Flood fill" />
-                  <MenuItem mnemonicParsing="false" onAction="#evtRasteirizacao" text="Rasteirização" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtCisalhamentoX" text="Cisalhamento X" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtCisalhamentoY" text="Cisalhamento Y" />
                   <MenuItem mnemonicParsing="false" onAction="#evtEspelhamento" text="Espelhamento X" />
                   <MenuItem mnemonicParsing="false" onAction="#evtEspelhamentoY" text="Espelhamento Y" />
                   <MenuItem mnemonicParsing="false" onAction="#evtEspelhamentoXY" text="Espelhamento XY" />
-                  <MenuItem mnemonicParsing="false" onAction="#evtCisalhamentoX" text="Cisalhamento X" />
-                  <MenuItem mnemonicParsing="false" onAction="#evtCisalhamentoY" text="Cisalhamento Y" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtFloodFill" text="Flood Fill" />
+                  <MenuItem mnemonicParsing="false" onAction="#evtRasteirizacao" text="Scanline" />
               </items>
                <font>
                   <Font size="20.0" />

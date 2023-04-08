@@ -594,8 +594,26 @@ public class CanetaMasterController implements Initializable {
     @FXML
     private void evtLimparTela(ActionEvent event) {
         
+        retaReal.setSelected(false);
+        dda.setSelected(false);
+        retaMedio.setSelected(false);
+        cirReal.setSelected(false);
+        cirTrig.setSelected(false);
+        cirMedio.setSelected(false);
+        elipse.setSelected(false);
+        
+        txCisalhamento.clear();
         txCisalhamento.setVisible(false);
         btnCisalhamento.setVisible(false);
+        
+        txEscala.clear();
+        txEscala.setVisible(false);
+        btnEscala.setVisible(false);
+        
+        txRoda.clear();
+        txRoda.setVisible(false);
+        btnDireita.setVisible(false);
+        btnEsquerda.setVisible(false);
         
         int altura = 1200;
         int largura = 768;

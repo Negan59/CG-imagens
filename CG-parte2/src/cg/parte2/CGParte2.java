@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class CGParte2 extends Application {
@@ -19,7 +20,8 @@ public class CGParte2 extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("CanetaMaster.fxml"));
         
         Scene scene = new Scene(root);
-        stage.setTitle("PhotoFX V1.0");
+        stage.setTitle("Primitivas Gráficas e Transformações 2D");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("image.png")));
         stage.setScene(scene);
         stage.setFullScreen(false);
         
