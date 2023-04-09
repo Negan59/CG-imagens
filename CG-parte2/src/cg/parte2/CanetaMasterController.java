@@ -85,7 +85,7 @@ public class CanetaMasterController implements Initializable {
     private TextField txEscala;
     @FXML
     private Button btnEscala;
-    
+
     private boolean cisalhamentoX = false, cisalhamentoY = false;
     @FXML
     private TextField txCisalhamento;
@@ -593,7 +593,7 @@ public class CanetaMasterController implements Initializable {
 
     @FXML
     private void evtLimparTela(ActionEvent event) {
-        
+
         retaReal.setSelected(false);
         dda.setSelected(false);
         retaMedio.setSelected(false);
@@ -601,20 +601,20 @@ public class CanetaMasterController implements Initializable {
         cirTrig.setSelected(false);
         cirMedio.setSelected(false);
         elipse.setSelected(false);
-        
+
         txCisalhamento.clear();
         txCisalhamento.setVisible(false);
         btnCisalhamento.setVisible(false);
-        
+
         txEscala.clear();
         txEscala.setVisible(false);
         btnEscala.setVisible(false);
-        
+
         txRoda.clear();
         txRoda.setVisible(false);
         btnDireita.setVisible(false);
         btnEsquerda.setVisible(false);
-        
+
         int altura = 1200;
         int largura = 768;
 
@@ -830,35 +830,56 @@ public class CanetaMasterController implements Initializable {
     }
 
     @FXML
-    private void evtTranslada(ActionEvent event
-    ) {
+    private void evtTranslada(ActionEvent event) {
+        
         this.translada = true;
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
     }
 
     @FXML
-    private void evtRotacao(ActionEvent event
-    ) {
+    private void evtRotacao(ActionEvent event) {
+        
         btnEsquerda.setVisible(true);
         btnDireita.setVisible(true);
         txRoda.setVisible(true);
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
     }
 
     @FXML
-    private void evtRotacionaEsquerda(ActionEvent event
-    ) {
+    private void evtRotacionaEsquerda(ActionEvent event) {
+        
         this.rotacao(Double.parseDouble(txRoda.getText()));
     }
 
     @FXML
-    private void evtRotacionaDireita(ActionEvent event
-    ) {
+    private void evtRotacionaDireita(ActionEvent event) {
+        
         this.rotacao(Double.parseDouble(txRoda.getText()));
     }
 
     @FXML
-    private void evtFloodFill(ActionEvent event
-    ) {
+    private void evtFloodFill(ActionEvent event) {
+        
         floodfill = true;
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
     }
 
     private void floodfill(double x, double y) {
@@ -918,6 +939,13 @@ public class CanetaMasterController implements Initializable {
     private void evtEscala(ActionEvent event) {
         btnEscala.setVisible(true);
         txEscala.setVisible(true);
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
     }
 
     @FXML
@@ -948,7 +976,7 @@ public class CanetaMasterController implements Initializable {
             }
             aet.sort();
 
-            for (int i = aet.getList().size()-1; i >=0; i--) {
+            for (int i = aet.getList().size() - 1; i >= 0; i--) {
                 if (aet.getList().get(i).getYmax() == y) {
                     aet.getList().remove(aet.getList().get(i));
                 }
@@ -980,16 +1008,32 @@ public class CanetaMasterController implements Initializable {
     }
 
     @FXML
-    private void evtRasteirizacao(ActionEvent event
-    ) {
+    private void evtRasteirizacao(ActionEvent event) {
+        
         System.out.println("chamando a função de pintar poligono");
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
+        
         preenchePoligono();
-
     }
 
     @FXML
     private void evtEspelhamento(ActionEvent event) {
-         
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
+
         Poligono po = poligonos.get(numObj);
 
         // Média aritmética das coordenadas para calcular o centro do polígono
@@ -1026,37 +1070,50 @@ public class CanetaMasterController implements Initializable {
 
     @FXML
     private void evtCisalhamentoX(ActionEvent event) {
-        
+
         cisalhamentoX = true;
         txCisalhamento.setVisible(true);
         btnCisalhamento.setVisible(true);
+        
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
+     
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
     }
 
     @FXML
     private void evtCisalhamentoY(ActionEvent event) {
-        
+
         cisalhamentoY = true;
         txCisalhamento.setVisible(true);
         btnCisalhamento.setVisible(true);
+        
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
+     
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
     }
 
     @FXML
     private void evtCisalhamento(ActionEvent event) {
-        
+
         double[][] matrizX = {{1, 0, 0}, {Double.parseDouble(txCisalhamento.getText()), 1, 0}, {0, 0, 1}};
         double[][] matrizY = {{1, Double.parseDouble(txCisalhamento.getText()), 0}, {0, 1, 0}, {0, 0, 1}};
-        
+
         Poligono po = poligonos.get(numObj);
-        
-        if(cisalhamentoX){
-            
+
+        if (cisalhamentoX) {
+
             po.setMatrizTransformacao(multiplicarMatrizes(po.getMatrizTransformacao(), matrizX));
-        }
-        else if(cisalhamentoY){
-            
+        } else if (cisalhamentoY) {
+
             po.setMatrizTransformacao(multiplicarMatrizes(po.getMatrizTransformacao(), matrizY));
         }
-        
+
         for (int k = 0; k < po.getOriginal().size(); k++) {
             double x = po.getOriginal().get(k).getX();
             double y = po.getOriginal().get(k).getY();
@@ -1073,6 +1130,15 @@ public class CanetaMasterController implements Initializable {
 
     @FXML
     private void evtEspelhamentoY(ActionEvent event) {
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
+        
         Poligono po = poligonos.get(numObj);
 
         // Média aritmética das coordenadas para calcular o centro do polígono
@@ -1109,6 +1175,15 @@ public class CanetaMasterController implements Initializable {
 
     @FXML
     private void evtEspelhamentoXY(ActionEvent event) {
+        
+        txCisalhamento.setVisible(false);
+        btnCisalhamento.setVisible(false);
+        btnEscala.setVisible(false);
+        txEscala.setVisible(false);
+        btnEsquerda.setVisible(false);
+        btnDireita.setVisible(false);
+        txRoda.setVisible(false);
+        
         Poligono po = poligonos.get(numObj);
 
         // Média aritmética das coordenadas para calcular o centro do polígono
@@ -1142,5 +1217,5 @@ public class CanetaMasterController implements Initializable {
         }
         pintarNovamente(numObj);
     }
-
+    
 }
