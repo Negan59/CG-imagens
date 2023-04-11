@@ -197,9 +197,9 @@ public class CanetaMasterController implements Initializable {
         bimage = SwingFXUtils.fromFXImage(image, null);
         int pixel[] = {0, 0, 0, 0};
         WritableRaster raster = bimage.getRaster();
-        double dy = y2 - y1;
         double dx = x2 - x1;
-
+        double dy = y2 - y1;
+        
         if (dx < 0) { // se dx é negativo, inverte a ordem dos pontos
             double tmp = x1;
             x1 = x2;
@@ -215,7 +215,7 @@ public class CanetaMasterController implements Initializable {
         double y;
         double x;
 
-        if (dx > dy) {
+        if (Math.abs(dx) > Math.abs(dy)) {
             if (x2 > x1) {
                 //primeiro e oitavo octantes
                 for (x = x1; x <= x2; x++) {
